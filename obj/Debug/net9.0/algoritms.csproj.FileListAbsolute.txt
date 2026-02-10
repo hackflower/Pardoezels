@@ -1,0 +1,4 @@
+C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.AssemblyInfoInputs.cache
+C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.AssemblyInfo.cs
+C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.csproj.CoreCompileInputs.cache
