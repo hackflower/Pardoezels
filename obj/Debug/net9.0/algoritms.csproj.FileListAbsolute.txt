@@ -2,3 +2,8 @@ C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.GeneratedMSBuildEd
 C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.AssemblyInfoInputs.cache
 C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.AssemblyInfo.cs
 C:\Users\kaith\Documents\algoritms\obj\Debug\net9.0\algoritms.csproj.CoreCompileInputs.cache
+C:\Users\youri\Documents\Jaar 2 Informatica\Pardoezels\obj\Debug\net9.0\algoritms.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\youri\Documents\Jaar 2 Informatica\Pardoezels\obj\Debug\net9.0\algoritms.AssemblyInfoInputs.cache
+C:\Users\youri\Documents\Jaar 2 Informatica\Pardoezels\obj\Debug\net9.0\algoritms.AssemblyInfo.cs
+C:\Users\youri\Documents\Jaar 2 Informatica\Pardoezels\obj\Debug\net9.0\algoritms.csproj.CoreCompileInputs.cache
+C:\Users\youri\Documents\Jaar 2 Informatica\Pardoezels\obj\Debug\net9.0\algoritms.sourcelink.json

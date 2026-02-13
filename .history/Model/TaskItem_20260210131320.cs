@@ -1,4 +1,4 @@
-public class TaskItem
+class TaskItem
 {
     public int Id { get; set; }
     public required string Description { get; set; }
