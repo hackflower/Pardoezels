@@ -6,6 +6,6 @@ public class TaskItem
 
     public override string ToString()
     {
-        return $"{Id}.\nTask Description: {Description},\nCompleted: {Completed}\n";
+        return $"{Id}. {Description}, {(Completed ? "Completed" : "Not Completed")}";
     }
 }

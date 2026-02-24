@@ -28,5 +28,10 @@
     "Id": 6,
     "Description": "a4",
     "Completed": false
+  },
+  {
+    "Id": 7,
+    "Description": "Efteling Groepsuitje",
+    "Completed": false
   }
 ]
