@@ -1,7 +1,7 @@
 class TaskService : ITaskService
 {
     private readonly ITaskRepository _repository;
-    private readonly List<TaskItem> _tasks;
+    private readonly Efteldingen<TaskItem> _tasks;
     public TaskService(ITaskRepository repository)
     {
         _repository = repository;
@@ -28,7 +28,7 @@ class TaskService : ITaskService
     }
     public void RemoveTask(int id)
     {
-        var task = _tasks.Find(t => t.Id == id);
+        var task = _tasks.Find(id, (t, key) => t.Id == key);
         if (task != null)
         {
             _tasks.Remove(task);
@@ -41,7 +41,7 @@ class TaskService : ITaskService
     }
     public void ToggleTaskCompletion(int id)
     {
-        var task = _tasks.Find(t => t.Id == id);
+        var task = _tasks.Find(id, (t, key) => t.Id == key);
         if (task != null)
         {
             task.Completed = !task.Completed;
