@@ -24,6 +24,19 @@ public class Efteldingen<T> : IEfteldingen<T>
         
     }
 
+    public T? FindBy<K>(K key, Func<T, K, bool> comparer)
+    {
+        for (int i = 0; i < _data.Length; i++)
+        {
+            if (comparer(_data[i], key))
+            {
+                return _data[i];
+            }
+        }
+
+        return default;
+    }
+
     private void Resize()
     {
         T[] newArray = new T[_data.Length * 2];
