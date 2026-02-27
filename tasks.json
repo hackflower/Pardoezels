@@ -1,37 +1,30 @@
 [
   {
     "Id": 1,
-    "Description": "hoi",
-    "Completed": false
+    "Name": null,
+    "Description": "hi",
+    "Completed": false,
+    "CreatedAt": "0001-01-01T00:00:00"
   },
   {
     "Id": 2,
-    "Description": "hallo",
-    "Completed": false
+    "Name": null,
+    "Description": "peepee",
+    "Completed": false,
+    "CreatedAt": "2026-02-27T09:11:33.0570907+01:00"
   },
   {
     "Id": 3,
-    "Description": "hallo",
-    "Completed": false
+    "Name": null,
+    "Description": "peepee",
+    "Completed": false,
+    "CreatedAt": "2026-02-27T09:12:50.0932237+01:00"
   },
   {
     "Id": 4,
-    "Description": "meow",
-    "Completed": false
-  },
-  {
-    "Id": 5,
-    "Description": "hi",
-    "Completed": false
-  },
-  {
-    "Id": 6,
-    "Description": "a4",
-    "Completed": false
-  },
-  {
-    "Id": 7,
-    "Description": "Efteling Groepsuitje",
-    "Completed": false
+    "Name": "meow",
+    "Description": "meowmeow",
+    "Completed": false,
+    "CreatedAt": "2026-02-27T09:18:21.9768642+01:00"
   }
 ]

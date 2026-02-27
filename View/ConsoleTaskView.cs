@@ -31,8 +31,10 @@ public class ConsoleTaskView : ITaskView
             switch (option)
             {
                 case "1":
+                    string name = Prompt("Enter task name: ");
                     string description = Prompt("Enter task description: ");
-                    _service.AddTask(description);
+
+                    _service.AddTask(description, name);
                     break;
                 case "2":
                     string removeIdStr = Prompt("Enter task id to remove: ");

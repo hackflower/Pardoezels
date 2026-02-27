@@ -8,15 +8,17 @@ class TaskService : ITaskService
         _tasks = _repository.LoadTasks();
     }
     public IEnumerable<TaskItem> GetAllTasks() => _tasks;
-    public void AddTask(string description)
+    public void AddTask(string description, string name)
     {
         int newId = _tasks.Count > 0 ? _tasks[_tasks.Count - 1].Id + 1 :
        1;
         var newTask = new TaskItem
         {
             Id = newId,
+            Name = name,
             Description =
             description,
+            CreatedAt = DateTime.Now,
             Completed = false
         };
         _tasks.Add(newTask);
