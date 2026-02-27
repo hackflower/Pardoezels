@@ -19,6 +19,7 @@ public class ConsoleTaskView : ITaskView
     }
     int ShowMenu(string title, string[] options)
     {
+        Console.CursorVisible = false;
         int selectedIndex = 0;
         ConsoleKey key;
 
@@ -47,11 +48,18 @@ public class ConsoleTaskView : ITaskView
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
 
-            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+            else if (key == ConsoleKey.UpArrow && selectedIndex == 0)
+                selectedIndex = options.Length - 1;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
                 selectedIndex++;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex == options.Length - 1)
+                selectedIndex = 0;
 
         } while (key != ConsoleKey.Enter);
 
+        Console.CursorVisible = true;
         return selectedIndex;
     }
     public void Run()
