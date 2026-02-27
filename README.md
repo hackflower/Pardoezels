@@ -1,3 +1,3 @@
 # pardoezels
 
-Alle tovertwinkels! Hallo iedereen!
+Alle tovertwinkels! Hallo allemaal!
