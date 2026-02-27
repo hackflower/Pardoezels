@@ -8,7 +8,7 @@ class TaskService : ITaskService
         _tasks = _repository.LoadTasks();
     }
     public IEnumerable<TaskItem> GetAllTasks() => _tasks;
-    public void AddTask(string description, string name)
+    public void AddTask(string description, string name, string priority)
     {
         int newId = _tasks.Count > 0 ? _tasks[_tasks.Count - 1].Id + 1 :
        1;
@@ -18,6 +18,8 @@ class TaskService : ITaskService
             Name = name,
             Description =
             description,
+            Priority =
+            priority,
             CreatedAt = DateTime.Now,
             Completed = false
         };
@@ -30,6 +32,10 @@ class TaskService : ITaskService
         if (task != null)
         {
             _tasks.Remove(task);
+            for (int i = 0; i < _tasks.Count; i++)
+            {
+                _tasks[i].Id = i + 1;
+            }
             _repository.SaveTasks(_tasks);
         }
     }

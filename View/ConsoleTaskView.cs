@@ -18,42 +18,42 @@ public class ConsoleTaskView : ITaskView
         return Console.ReadLine();
     }
     int ShowMenu(string title, string[] options)
-{
-    int selectedIndex = 0;
-    ConsoleKey key;
-
-    do
     {
-        Console.Clear();
-        Console.WriteLine(title);
-        Console.WriteLine();
+        int selectedIndex = 0;
+        ConsoleKey key;
 
-        for (int i = 0; i < options.Length; i++)
+        do
         {
-            if (i == selectedIndex)
+            Console.Clear();
+            Console.WriteLine(title);
+            Console.WriteLine();
+
+            for (int i = 0; i < options.Length; i++)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("> " + options[i]);
-                Console.ResetColor();
+                if (i == selectedIndex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("> " + options[i]);
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine("  " + options[i]);
+                }
             }
-            else
-            {
-                Console.WriteLine("  " + options[i]);
-            }
-        }
 
-        key = Console.ReadKey(true).Key;
+            key = Console.ReadKey(true).Key;
 
-        if (key == ConsoleKey.UpArrow && selectedIndex > 0)
-            selectedIndex--;
+            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
+                selectedIndex--;
 
-        if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
-            selectedIndex++;
+            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+                selectedIndex++;
 
-    } while (key != ConsoleKey.Enter);
+        } while (key != ConsoleKey.Enter);
 
-    return selectedIndex;
-}
+        return selectedIndex;
+    }
     public void Run()
     {
         while (true)
@@ -77,8 +77,9 @@ public class ConsoleTaskView : ITaskView
                 case 2:
                     string name = Prompt("Enter task name: ");
                     string description = Prompt("Enter task description: ");
+                    string priority = Prompt("Enter task priority: (high, medium, low)");
 
-                    _service.AddTask(description, name);
+                    _service.AddTask(description, name, priority);
                     break;
                 case 3:
                     string removeIdStr = Prompt("Enter task id to remove: ");
@@ -104,3 +105,4 @@ public class ConsoleTaskView : ITaskView
         }
     }
 }
+// test
