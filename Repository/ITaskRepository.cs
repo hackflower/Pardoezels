@@ -1,5 +1,5 @@
 interface ITaskRepository
 {
-    List<TaskItem> LoadTasks();
-    void SaveTasks(List<TaskItem> tasks);
+    Efteldingen<TaskItem> LoadTasks();
+    void SaveTasks(Efteldingen<TaskItem> tasks);
 }
