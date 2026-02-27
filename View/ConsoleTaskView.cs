@@ -33,8 +33,9 @@ public class ConsoleTaskView : ITaskView
                 case "1":
                     string name = Prompt("Enter task name: ");
                     string description = Prompt("Enter task description: ");
+                    string priority = Prompt("Enter task priority: (high, medium, low)");
 
-                    _service.AddTask(description, name);
+                    _service.AddTask(description, name, priority);
                     break;
                 case "2":
                     string removeIdStr = Prompt("Enter task id to remove: ");
