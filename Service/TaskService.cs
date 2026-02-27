@@ -28,6 +28,10 @@ class TaskService : ITaskService
         if (task != null)
         {
             _tasks.Remove(task);
+            for (int i = 0; i < _tasks.Count; i++)
+            {
+                _tasks[i].Id = i + 1;
+            }
             _repository.SaveTasks(_tasks);
         }
     }
