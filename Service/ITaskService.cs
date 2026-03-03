@@ -4,4 +4,6 @@ public interface ITaskService
     void AddTask(string description, string name, string priority);
     void RemoveTask(int id);
     void ToggleTaskCompletion(int id);
+    void ChangeTaskDescription(int id, string desc);
+    void ChangeTaskName(int id, string name);
 }

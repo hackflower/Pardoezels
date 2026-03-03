@@ -18,8 +18,6 @@ class TaskService : ITaskService
             Name = name,
             Description =
             description,
-            Priority =
-            priority,
             CreatedAt = DateTime.Now,
             Completed = false
         };
@@ -28,23 +26,38 @@ class TaskService : ITaskService
     }
     public void RemoveTask(int id)
     {
-        var task = _tasks.Find(id, (t, key) => t.Id == key);
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
             _tasks.Remove(task);
-            for (int i = 0; i < _tasks.Count; i++)
-            {
-                _tasks[i].Id = i + 1;
-            }
             _repository.SaveTasks(_tasks);
         }
     }
     public void ToggleTaskCompletion(int id)
     {
-        var task = _tasks.Find(id, (t, key) => t.Id == key);
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
             task.Completed = !task.Completed;
+            _repository.SaveTasks(_tasks);
+        }
+    }
+    public void ChangeTaskName(int id, string name)
+    {
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
+        if (task != null)
+        {
+            task.Name = name;
+            _repository.SaveTasks(_tasks);
+        }
+    }
+
+    public void ChangeTaskDescription(int id, string desc)
+    {
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
+        if (task != null)
+        {
+            task.Description = desc;
             _repository.SaveTasks(_tasks);
         }
     }
