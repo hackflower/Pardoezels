@@ -17,6 +17,8 @@ public class ConsoleTaskView : ITaskView
         Console.Write(prompt);
         return Console.ReadLine();
     }
+
+
     int ShowMenu(string title, string[] options)
     {
         int selectedIndex = 0;
@@ -54,6 +56,63 @@ public class ConsoleTaskView : ITaskView
 
         return selectedIndex;
     }
+
+    public static string? LiveChangeInput(string toBeChanged)
+    {
+        string newValue = "";
+        do
+        {
+            Console.Clear();
+            Console.WriteLine($"fill in new {toBeChanged}");
+            Console.WriteLine(newValue);
+            ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+            switch (pressedKey.Key)
+            {
+                case ConsoleKey.Backspace:
+                    if (newValue.Length > 0)
+                    {
+                        newValue = newValue.Remove(newValue.Length - 1);
+                    }
+                    break;
+                case ConsoleKey.Enter:
+                    return newValue;
+                case ConsoleKey.Escape:
+                    return null;
+                default:
+                    newValue += pressedKey.KeyChar;
+                    break;
+            }
+
+        } while (true);
+
+    }
+
+    void AddTaskForm()
+    {
+        string q1 = "name:";
+        string q2 = "description ";
+        string q3 = "priority";
+
+        string[] questions = [q1, q2, q3];
+        int selectedQuestion = ShowMenu("personalData", questions);
+        int selectedQuestionIndex = Array.IndexOf(questions, selectedQuestion);
+
+        switch (selectedQuestionIndex)
+        {
+            case 0://name
+                string? newName = LiveChangeInput("name");
+                break;
+
+            case 1://description
+                string? newDescription = LiveChangeInput("description");
+                break;
+            case 2://priority
+                string? newPriority = LiveChangeInput("priority");
+                break;
+        }
+    }
+
+
     public void Run()
     {
         while (true)
@@ -75,11 +134,16 @@ public class ConsoleTaskView : ITaskView
                     Prompt("Press enter to return to main menu...");
                     break;
                 case 2:
-                    string name = Prompt("Enter task name: ");
-                    string description = Prompt("Enter task description: ");
-                    string priority = Prompt("Enter task priority: (high, medium, low)");
-
-                    _service.AddTask(description, name, priority);
+                    string[] addTaskOptions =
+                    {
+                        "Enter task name",
+                        "Enter task description:",
+                        "Enter task priority:",
+                        "[CANCEL]",
+                        "[ADD]"
+                    };
+                    int addTaskChoice = ShowMenu("==== Add Task ====", addTaskOptions) + 1;
+                    //_service.AddTask(description, name, priority);
                     break;
                 case 3:
                     string removeIdStr = Prompt("Enter task id to remove: ");
