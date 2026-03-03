@@ -115,8 +115,9 @@ public class ConsoleTaskView : ITaskView
                 case 2:
                     string name = Prompt("Enter task name: ");
                     string description = Prompt("Enter task description: ");
+                    string priority = Prompt("Enter task priority" );
 
-                    _service.AddTask(description, name);
+                    _service.AddTask(description, name, priority);
                     break;
                 case 3:
                     return;

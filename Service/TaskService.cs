@@ -1,14 +1,14 @@
 class TaskService : ITaskService
 {
     private readonly ITaskRepository _repository;
-    private readonly List<TaskItem> _tasks;
+    private readonly Efteldingen<TaskItem> _tasks;
     public TaskService(ITaskRepository repository)
     {
         _repository = repository;
         _tasks = _repository.LoadTasks();
     }
     public IEnumerable<TaskItem> GetAllTasks() => _tasks;
-    public void AddTask(string description, string name)
+    public void AddTask(string description, string name, string priority)
     {
         int newId = _tasks.Count > 0 ? _tasks[_tasks.Count - 1].Id + 1 :
        1;
@@ -26,7 +26,7 @@ class TaskService : ITaskService
     }
     public void RemoveTask(int id)
     {
-        var task = _tasks.Find(t => t.Id == id);
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
             _tasks.Remove(task);
@@ -35,7 +35,7 @@ class TaskService : ITaskService
     }
     public void ToggleTaskCompletion(int id)
     {
-        var task = _tasks.Find(t => t.Id == id);
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
             task.Completed = !task.Completed;
@@ -44,7 +44,7 @@ class TaskService : ITaskService
     }
     public void ChangeTaskName(int id, string name)
     {
-        var task = _tasks.Find(t => t.Id == id);
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
             task.Name = name;
@@ -54,7 +54,7 @@ class TaskService : ITaskService
 
     public void ChangeTaskDescription(int id, string desc)
     {
-        var task = _tasks.Find(t => t.Id == id);
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
             task.Description = desc;
