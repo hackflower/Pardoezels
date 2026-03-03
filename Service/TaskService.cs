@@ -42,4 +42,23 @@ class TaskService : ITaskService
             _repository.SaveTasks(_tasks);
         }
     }
+    public void ChangeTaskName(int id, string name)
+    {
+        var task = _tasks.Find(t => t.Id == id);
+        if (task != null)
+        {
+            task.Name = name;
+            _repository.SaveTasks(_tasks);
+        }
+    }
+
+    public void ChangeTaskDescription(int id, string desc)
+    {
+        var task = _tasks.Find(t => t.Id == id);
+        if (task != null)
+        {
+            task.Description = desc;
+            _repository.SaveTasks(_tasks);
+        }
+    }
 }

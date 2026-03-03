@@ -7,53 +7,94 @@ public class ConsoleTaskView : ITaskView
     }
     void DisplayTasks(IEnumerable<TaskItem> tasks)
     {
+        TaskItem[] allTasks = _service.GetAllTasks().ToArray();
+        List<string> taskStringList = new List<string>();
+        foreach(TaskItem task in allTasks)
+        {
+            taskStringList.Add(task.ToString());
+        }
         Console.Clear();
-        Console.WriteLine("==== ToDo List ====");
-        foreach (var task in tasks)
-            Console.WriteLine($"{task}");
+        TaskItem ChosenTask = allTasks[ShowMenu("==== ToDo List ====\n     Select a task to edit.", taskStringList.ToArray())];
+        EditTask(ChosenTask);
     }
+
+    void EditTask(TaskItem task)
+    {
+        string[] options =
+        {
+            "Edit Name",
+            "Edit Description",
+            "Toggle State",
+            "Remove Task",
+            "Exit"
+        };
+
+            int choice = ShowMenu("==== Task Edit Menu ====", options) + 1;
+            switch (choice)
+            {
+                case 1:
+                    _service.ChangeTaskName(task.Id, Prompt("Enter new task name: "));
+                    break;
+                case 2:
+                    _service.ChangeTaskDescription(task.Id, Prompt("Enter new task description: "));
+                    break;
+                case 3:
+                    _service.ToggleTaskCompletion(task.Id);
+                    break;
+                case 4:
+                    _service.RemoveTask(task.Id);
+                    break;
+                case 5:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option. Press any key to continue...");
+                    Console.ReadKey();
+                    break;
+            }
+        }
     string Prompt(string prompt)
     {
         Console.Write(prompt);
         return Console.ReadLine();
     }
     int ShowMenu(string title, string[] options)
-{
-    int selectedIndex = 0;
-    ConsoleKey key;
-
-    do
     {
-        Console.Clear();
-        Console.WriteLine(title);
-        Console.WriteLine();
+        int selectedIndex = 0;
+        ConsoleKey key;
 
-        for (int i = 0; i < options.Length; i++)
+        do
         {
-            if (i == selectedIndex)
+            Console.Clear();
+            Console.WriteLine(title);
+            Console.WriteLine();
+
+            for (int i = 0; i < options.Length; i++)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("> " + options[i]);
-                Console.ResetColor();
+                if (i == selectedIndex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("" + options[i]);
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine("" + options[i]);
+                }
             }
-            else
-            {
-                Console.WriteLine("  " + options[i]);
-            }
-        }
 
-        key = Console.ReadKey(true).Key;
+            key = Console.ReadKey(true).Key;
 
-        if (key == ConsoleKey.UpArrow && selectedIndex > 0)
-            selectedIndex--;
+            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
+                selectedIndex--;
 
-        if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
-            selectedIndex++;
+            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+                selectedIndex++;
 
-    } while (key != ConsoleKey.Enter);
+        } while (key != ConsoleKey.Enter);
 
-    return selectedIndex;
-}
+        return selectedIndex;
+    }
+
     public void Run()
     {
         while (true)
@@ -62,8 +103,6 @@ public class ConsoleTaskView : ITaskView
             {
                 "View Tasks",
                 "Add Task",
-                "Remove Task",
-                "Toggle Task State",
                 "Exit"
             };
 
@@ -72,7 +111,6 @@ public class ConsoleTaskView : ITaskView
             {
                 case 1:
                     DisplayTasks(_service.GetAllTasks());
-                    Prompt("Press enter to return to main menu...");
                     break;
                 case 2:
                     string name = Prompt("Enter task name: ");
@@ -81,20 +119,6 @@ public class ConsoleTaskView : ITaskView
                     _service.AddTask(description, name);
                     break;
                 case 3:
-                    string removeIdStr = Prompt("Enter task id to remove: ");
-                    if (int.TryParse(removeIdStr, out int removeId))
-                    {
-                        _service.RemoveTask(removeId);
-                    }
-                    break;
-                case 4:
-                    string toggleIdStr = Prompt("Enter task id to toggle: ");
-                    if (int.TryParse(toggleIdStr, out int toggleId))
-                    {
-                        _service.ToggleTaskCompletion(toggleId);
-                    }
-                    break;
-                case 5:
                     return;
                 default:
                     Console.WriteLine("Invalid option. Press any key to continue...");
