@@ -5,7 +5,7 @@ public class ConsoleTaskView : ITaskView
     {
         _service = service;
     }
-    void DisplayTasks(IEnumerable<TaskItem> tasks)
+    void DisplayTasks()
     {
         TaskItem[] allTasks = _service.GetAllTasks().ToArray();
         List<string> taskStringList = new List<string>();
@@ -29,27 +29,32 @@ public class ConsoleTaskView : ITaskView
             "Exit"
         };
 
-        int choice = ShowMenu("==== Task Edit Menu ====", options) + 1;
-        switch (choice)
-        {
-            case 1:
-                _service.ChangeTaskName(task.Id, Prompt("Enter new task name: "));
-                break;
-            case 2:
-                _service.ChangeTaskDescription(task.Id, Prompt("Enter new task description: "));
-                break;
-            case 3:
-                _service.ToggleTaskCompletion(task.Id);
-                break;
-            case 4:
-                _service.RemoveTask(task.Id);
-                break;
-            case 5:
-                return;
-            default:
-                Console.WriteLine("Invalid option. Press any key to continue...");
-                Console.ReadKey();
-                break;
+            int choice = ShowMenu("==== Task Edit Menu ====", options) + 1;
+            switch (choice)
+            {
+                case 1:
+                    _service.ChangeTaskName(task.Id, Prompt("Enter new task name: "));
+                    DisplayTasks();
+                    break;
+                case 2:
+                    _service.ChangeTaskDescription(task.Id, Prompt("Enter new task description: "));
+                    DisplayTasks();
+                    break;
+                case 3:
+                    _service.ToggleTaskCompletion(task.Id);
+                    DisplayTasks();
+                    break;
+                case 4:
+                    _service.RemoveTask(task.Id);
+                    DisplayTasks();
+                    break;
+                case 5:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option. Press any key to continue...");
+                    Console.ReadKey();
+                    break;
+            }
         }
     }
 
@@ -122,12 +127,12 @@ public class ConsoleTaskView : ITaskView
             switch (choice)
             {
                 case 1:
-                    DisplayTasks(_service.GetAllTasks());
+                    DisplayTasks();
                     break;
                 case 2:
                     string name = Prompt("Enter task name: ");
                     string description = Prompt("Enter task description: ");
-                    string priority = Prompt("Enter task priority" );
+                    string priority = Prompt("Enter task priority: " );
 
                     _service.AddTask(description, name, priority);
                     break;

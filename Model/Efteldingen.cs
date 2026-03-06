@@ -72,6 +72,30 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
         return default;
     }
 
+    public T? BinarySearch<K>(K key, Func<T, K, int> comparer)
+    {
+        int low = 0;
+        int high = _count;
+
+        while (high >= low)
+        {
+            int middle = (low + high) / 2;
+
+            if (comparer(_data[middle], key) == 0)
+            {
+                return _data[middle];
+            } else if (comparer(_data[middle], key) > 0)
+            {
+                low = middle + 1;
+            } else
+            {
+                high = middle - 1;
+            }
+        }
+
+        return default;
+    }
+
     private void Resize()
     {
         T[] newArray = new T[_data.Length * 2];
