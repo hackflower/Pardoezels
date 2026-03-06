@@ -29,40 +29,43 @@ public class ConsoleTaskView : ITaskView
             "Exit"
         };
 
-            int choice = ShowMenu("==== Task Edit Menu ====", options) + 1;
-            switch (choice)
-            {
-                case 1:
-                    _service.ChangeTaskName(task.Id, Prompt("Enter new task name: "));
-                    break;
-                case 2:
-                    _service.ChangeTaskDescription(task.Id, Prompt("Enter new task description: "));
-                    break;
-                case 3:
-                    _service.ToggleTaskCompletion(task.Id);
-                    break;
-                case 4:
-                    _service.RemoveTask(task.Id);
-                    break;
-                case 5:
-                    return;
-                default:
-                    Console.WriteLine("Invalid option. Press any key to continue...");
-                    Console.ReadKey();
-                    break;
-            }
+        int choice = ShowMenu("==== Task Edit Menu ====", options) + 1;
+        switch (choice)
+        {
+            case 1:
+                _service.ChangeTaskName(task.Id, Prompt("Enter new task name: "));
+                break;
+            case 2:
+                _service.ChangeTaskDescription(task.Id, Prompt("Enter new task description: "));
+                break;
+            case 3:
+                _service.ToggleTaskCompletion(task.Id);
+                break;
+            case 4:
+                _service.RemoveTask(task.Id);
+                break;
+            case 5:
+                return;
+            default:
+                Console.WriteLine("Invalid option. Press any key to continue...");
+                Console.ReadKey();
+                break;
         }
+    }
+
     string Prompt(string prompt)
     {
         Console.Write(prompt);
         return Console.ReadLine();
     }
+
     int ShowMenu(string title, string[] options)
     {
         int selectedIndex = 0;
+        Console.CursorVisible = false;
         ConsoleKey key;
 
-        do
+        while (true)
         {
             Console.Clear();
             Console.WriteLine(title);
@@ -73,12 +76,12 @@ public class ConsoleTaskView : ITaskView
                 if (i == selectedIndex)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine(options[i]);
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine(options[i]);
                 }
             }
 
@@ -87,12 +90,21 @@ public class ConsoleTaskView : ITaskView
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
 
-            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+            else if (key == ConsoleKey.UpArrow && selectedIndex == 0)
+                selectedIndex = options.Length - 1;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex == options.Length - 1)
+                selectedIndex = 0;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
                 selectedIndex++;
-
-        } while (key != ConsoleKey.Enter);
-
-        return selectedIndex;
+            
+            else if (key == ConsoleKey.Enter)
+            {
+                Console.CursorVisible = true;
+                return selectedIndex;
+            }
+        }
     }
 
     public void Run()
