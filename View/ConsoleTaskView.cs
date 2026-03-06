@@ -8,6 +8,13 @@ public class ConsoleTaskView : ITaskView
     void DisplayTasks()
     {
         TaskItem[] allTasks = _service.GetAllTasks().ToArray();
+
+        if (allTasks.Length == 0)
+        {
+            Prompt("Task list is empty, add a task first.");
+            return;
+        }
+
         List<string> taskStringList = new List<string>();
         foreach(TaskItem task in allTasks)
         {
@@ -56,21 +63,17 @@ public class ConsoleTaskView : ITaskView
                     break;
             }
         }
-    }
-
     string Prompt(string prompt)
     {
         Console.Write(prompt);
         return Console.ReadLine();
     }
-
     int ShowMenu(string title, string[] options)
     {
         int selectedIndex = 0;
-        Console.CursorVisible = false;
         ConsoleKey key;
 
-        while (true)
+        do
         {
             Console.Clear();
             Console.WriteLine(title);
@@ -81,12 +84,12 @@ public class ConsoleTaskView : ITaskView
                 if (i == selectedIndex)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine(options[i]);
+                    Console.WriteLine("" + options[i]);
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine(options[i]);
+                    Console.WriteLine("" + options[i]);
                 }
             }
 
@@ -95,21 +98,12 @@ public class ConsoleTaskView : ITaskView
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
 
-            else if (key == ConsoleKey.UpArrow && selectedIndex == 0)
-                selectedIndex = options.Length - 1;
-
-            else if (key == ConsoleKey.DownArrow && selectedIndex == options.Length - 1)
-                selectedIndex = 0;
-
-            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
                 selectedIndex++;
-            
-            else if (key == ConsoleKey.Enter)
-            {
-                Console.CursorVisible = true;
-                return selectedIndex;
-            }
-        }
+
+        } while (key != ConsoleKey.Enter);
+
+        return selectedIndex;
     }
 
     public void Run()
