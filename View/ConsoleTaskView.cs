@@ -56,17 +56,21 @@ public class ConsoleTaskView : ITaskView
                     break;
             }
         }
+    }
+
     string Prompt(string prompt)
     {
         Console.Write(prompt);
         return Console.ReadLine();
     }
+
     int ShowMenu(string title, string[] options)
     {
         int selectedIndex = 0;
+        Console.CursorVisible = false;
         ConsoleKey key;
 
-        do
+        while (true)
         {
             Console.Clear();
             Console.WriteLine(title);
@@ -77,12 +81,12 @@ public class ConsoleTaskView : ITaskView
                 if (i == selectedIndex)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine(options[i]);
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine(options[i]);
                 }
             }
 
@@ -91,12 +95,21 @@ public class ConsoleTaskView : ITaskView
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
 
-            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+            else if (key == ConsoleKey.UpArrow && selectedIndex == 0)
+                selectedIndex = options.Length - 1;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex == options.Length - 1)
+                selectedIndex = 0;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
                 selectedIndex++;
-
-        } while (key != ConsoleKey.Enter);
-
-        return selectedIndex;
+            
+            else if (key == ConsoleKey.Enter)
+            {
+                Console.CursorVisible = true;
+                return selectedIndex;
+            }
+        }
     }
 
     public void Run()
