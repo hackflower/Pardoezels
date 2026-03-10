@@ -28,16 +28,16 @@ public class TaskService : ITaskService
     public void RemoveTask(int id)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
-        if (task != null)
+        if (task.HasValue)
         {
-            _tasks.Remove(task);
+            _tasks.Remove(task.Value);
             _repository.SaveTasks(_tasks);
         }
     }
     public void ChangeTaskStatus(int id, TaskItem.Progress status)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
-        if (task != null)
+        if (task.HasValue)
         {
             task.Status = status;
             _repository.SaveTasks(_tasks);
@@ -46,9 +46,9 @@ public class TaskService : ITaskService
     public void ChangeTaskName(int id, string name)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
-        if (task != null)
+        if (task.HasValue)
         {
-            task.Name = name;
+            task.Value.Name = name;
             _repository.SaveTasks(_tasks);
         }
     }
@@ -56,9 +56,9 @@ public class TaskService : ITaskService
     public void ChangeTaskDescription(int id, string desc)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
-        if (task != null)
+        if (task.HasValue)
         {
-            task.Description = desc;
+            task.Value.Description = desc;
             _repository.SaveTasks(_tasks);
         }
     }

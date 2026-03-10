@@ -30,6 +30,7 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
         _data = new T[4];
         _count = 0;
     }
+
     public void Add(T task)
     {
         if (_count == _data.Length)
@@ -59,17 +60,48 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
         }
     }
 
-    public T? Find<K>(K key, Func<T, K, bool> comparer)
+    public Optional<T> Find<K>(K key, Func<T, K, bool> comparer)
     {
         for (int i = 0; i < _count; i++)
         {
             if (comparer(_data[i], key))
             {
-                return _data[i];
+                return Optional<T>.Some(_data[i]);
             }
         }
 
-        return default;
+        return Optional<T>.None();
+    }
+
+    public void Sort(Comparison<T> comparison)
+    {
+        for (int i = 0; i < _count - 1; i++)
+        {
+            for (int j = 0; j < _count - i - 1; j++)
+            {
+                if (comparison(_data[j], _data[j + 1]) > 0)
+                {
+                    T temp = _data[j];
+                    _data[j] = _data[j + 1];
+                    _data[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    public Efteldingen<T> Filter(Func<T, bool> predicate)
+    {
+        Efteldingen<T> result = new Efteldingen<T>();
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (predicate(_data[i]))
+            {
+                result.Add(_data[i]);
+            }
+        }
+
+        return result;
     }
 
     public T? BinarySearch<K>(K key, Func<T, K, int> comparer)
