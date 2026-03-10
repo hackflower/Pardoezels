@@ -12,11 +12,11 @@ public class JsonTaskRepository : ITaskRepository
             return new Efteldingen<TaskItem>();
         }
         string json = File.ReadAllText(_filePath);
-        var list = JsonSerializer.Deserialize<List<TaskItem>>(json) ?? new List<TaskItem>();
+        var array = JsonSerializer.Deserialize<TaskItem[]>(json) ?? Array.Empty<TaskItem>();
         
         Efteldingen<TaskItem> tasks = new Efteldingen<TaskItem>();
 
-        foreach (TaskItem task in list)
+        foreach (TaskItem task in array)
         {
             tasks.Add(task);
         }
@@ -26,9 +26,7 @@ public class JsonTaskRepository : ITaskRepository
 
     public void SaveTasks(Efteldingen<TaskItem> tasks)
     {
-        string json = JsonSerializer.Serialize(tasks, new
-       JsonSerializerOptions
-        { WriteIndented = true });
+        string json = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
     }
 }
