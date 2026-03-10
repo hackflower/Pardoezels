@@ -43,17 +43,17 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("test description", "test task", "High");
+        service.AddTask("test description", "test task", "High", TaskItem.Progress.NotStarted);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
         var taskId = allTasks[0].Id;
 
-        service.ToggleTaskCompletion(taskId);
+        service.ChangeTaskStatus(taskId, TaskItem.Progress.Completed);
 
         allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
-        Assert.True(allTasks[0].Completed);
+        Assert.True(allTasks[0].Status == TaskItem.Progress.Completed);
 
         if (File.Exists(filePath))
             File.Delete(filePath);
@@ -121,7 +121,7 @@ public class TaskServiceTests
         Assert.Single(allTasks);
         Assert.Equal("test description", allTasks[0].Description);
         Assert.Equal("test task", allTasks[0].Name);
-        Assert.False(allTasks[0].Completed);
+        Assert.Equal(TaskItem.Progress.NotStarted, allTasks[0].Status);
 
         if (File.Exists(filePath))
             File.Delete(filePath);
