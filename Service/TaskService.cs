@@ -1,4 +1,4 @@
-class TaskService : ITaskService
+public class TaskService : ITaskService
 {
     private readonly ITaskRepository _repository;
     private readonly Efteldingen<TaskItem> _tasks;

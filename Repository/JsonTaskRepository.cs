@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-class JsonTaskRepository : ITaskRepository
+public class JsonTaskRepository : ITaskRepository
 {
     private readonly string _filePath;
     public JsonTaskRepository(string filePath) => _filePath =
