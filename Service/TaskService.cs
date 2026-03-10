@@ -7,8 +7,8 @@ public class TaskService : ITaskService
         _repository = repository;
         _tasks = _repository.LoadTasks();
     }
-    public IEnumerable<TaskItem> GetAllTasks() => _tasks;
-    public void AddTask(string description, string name, string priority)
+    public Efteldingen<TaskItem> GetAllTasks() => _tasks;
+    public void AddTask(string description, string name, string priority, TaskItem.Progress status = TaskItem.Progress.NotStarted)
     {
         int newId = _tasks.Count > 0 ? _tasks[_tasks.Count - 1].Id + 1 :
        1;
@@ -19,7 +19,8 @@ public class TaskService : ITaskService
             Description =
             description,
             CreatedAt = DateTime.Now,
-            Completed = false
+            Status = TaskItem.Progress.NotStarted,
+            Priority = priority
         };
         _tasks.Add(newTask);
         _repository.SaveTasks(_tasks);
@@ -33,12 +34,12 @@ public class TaskService : ITaskService
             _repository.SaveTasks(_tasks);
         }
     }
-    public void ToggleTaskCompletion(int id)
+    public void ChangeTaskStatus(int id, TaskItem.Progress status)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task != null)
         {
-            task.Completed = !task.Completed;
+            task.Status = status;
             _repository.SaveTasks(_tasks);
         }
     }
@@ -58,6 +59,16 @@ public class TaskService : ITaskService
         if (task != null)
         {
             task.Description = desc;
+            _repository.SaveTasks(_tasks);
+        }
+    }
+
+    public void ChangeTaskPriority(int id, string priority)
+    {
+        var task = _tasks.Find(id, (t, i) => t.Id == id);
+        if (task != null)
+        {
+            task.Priority = priority;
             _repository.SaveTasks(_tasks);
         }
     }

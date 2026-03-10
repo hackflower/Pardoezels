@@ -1,3 +1,5 @@
+using System.Security.Authentication.ExtendedProtection;
+
 public class ConsoleTaskView : ITaskView
 {
     private readonly ITaskService _service;
@@ -7,15 +9,15 @@ public class ConsoleTaskView : ITaskView
     }
     void DisplayTasks()
     {
-        TaskItem[] allTasks = _service.GetAllTasks().ToArray();
+        Efteldingen<TaskItem> allTasks = _service.GetAllTasks();
 
-        if (allTasks.Length == 0)
+        if (allTasks.Count == 0)
         {
             Prompt("Task list is empty, add a task first.");
             return;
         }
 
-        List<string> taskStringList = new List<string>();
+        Efteldingen<string> taskStringList = new Efteldingen<string>();
         foreach(TaskItem task in allTasks)
         {
             taskStringList.Add(task.ToString());
@@ -31,7 +33,8 @@ public class ConsoleTaskView : ITaskView
         {
             "Edit Name",
             "Edit Description",
-            "Toggle State",
+            "Change Status",
+            "Change Task Priority",
             "Remove Task",
             "Exit"
         };
@@ -48,14 +51,30 @@ public class ConsoleTaskView : ITaskView
                     DisplayTasks();
                     break;
                 case 3:
-                    _service.ToggleTaskCompletion(task.Id);
+                    string[] statusOptions =
+                    {
+                        "Not Started",
+                        "In Progress",
+                        "Completed"
+                    };
+
+                    int statusChoice = ShowMenu("==== Change Task Status ====", statusOptions);
+
+                    TaskItem.Progress newStatus = (TaskItem.Progress)statusChoice;
+
+                    _service.ChangeTaskStatus(task.Id, newStatus);
+
                     DisplayTasks();
                     break;
                 case 4:
-                    _service.RemoveTask(task.Id);
+                    _service.ChangeTaskPriority(task.Id, Prompt("Enter new task priority: "));
                     DisplayTasks();
                     break;
                 case 5:
+                    _service.RemoveTask(task.Id);
+                    DisplayTasks();
+                    break;
+                case 6:
                     return;
                 default:
                     Console.WriteLine("Invalid option. Press any key to continue...");
@@ -68,7 +87,7 @@ public class ConsoleTaskView : ITaskView
         Console.Write(prompt);
         return Console.ReadLine();
     }
-    int ShowMenu(string title, string[] options)
+    public int ShowMenu(string title, string[] options)
     {
         int selectedIndex = 0;
         ConsoleKey key;
@@ -83,13 +102,13 @@ public class ConsoleTaskView : ITaskView
             {
                 if (i == selectedIndex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("" + options[i]);
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("> " + options[i]);
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine(" " + options[i]);
                 }
             }
 
