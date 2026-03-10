@@ -60,17 +60,17 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
         }
     }
 
-    public T? Find<K>(K key, Func<T, K, bool> comparer)
+    public Optional<T> Find<K>(K key, Func<T, K, bool> comparer)
     {
         for (int i = 0; i < _count; i++)
         {
             if (comparer(_data[i], key))
             {
-                return _data[i];
+                return Optional<T>.Some(_data[i]);
             }
         }
 
-        return default;
+        return Optional<T>.None();
     }
 
     public void Sort(Comparison<T> comparison)
