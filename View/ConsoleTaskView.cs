@@ -71,38 +71,48 @@ public class ConsoleTaskView : ITaskView
     int ShowMenu(string title, string[] options)
     {
         int selectedIndex = 0;
+        Console.CursorVisible = false;
         ConsoleKey key;
 
-        do
+        while (true)
         {
             Console.Clear();
-            Console.WriteLine(title);
-            Console.WriteLine();
+            Console.WriteLine(title + "\n");
 
             for (int i = 0; i < options.Length; i++)
             {
                 if (i == selectedIndex)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine("> " + options[i]);
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine("" + options[i]);
+                    Console.WriteLine("  " + options[i]);
                 }
             }
 
             key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
+            if (key == ConsoleKey.UpArrow && selectedIndex != 0)
                 selectedIndex--;
 
-            if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+            else if (key == ConsoleKey.UpArrow)
+                selectedIndex = options.Length - 1;
+
+            else if (key == ConsoleKey.DownArrow && selectedIndex != options.Length - 1)
                 selectedIndex++;
 
-        } while (key != ConsoleKey.Enter);
+            else if (key == ConsoleKey.DownArrow)
+                selectedIndex = 0;
 
+            else if (key == ConsoleKey.Enter)
+                break;
+
+        }
+
+        Console.CursorVisible = true;
         return selectedIndex;
     }
 
