@@ -6,7 +6,6 @@
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
         ITaskView view = new ConsoleTaskView(service);
-        // Run the view
         view.Run();
     }
 }

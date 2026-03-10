@@ -39,10 +39,11 @@ public class TaskService : ITaskService
         var task = _tasks.Find(id, (t, i) => t.Id == id);
         if (task.HasValue)
         {
-            task.Status = status;
+            task.Value.Status = status;
             _repository.SaveTasks(_tasks);
         }
     }
+
     public void ChangeTaskName(int id, string name)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
@@ -66,9 +67,9 @@ public class TaskService : ITaskService
     public void ChangeTaskPriority(int id, string priority)
     {
         var task = _tasks.Find(id, (t, i) => t.Id == id);
-        if (task != null)
+        if (task.HasValue)
         {
-            task.Priority = priority;
+            task.Value.Priority = priority;
             _repository.SaveTasks(_tasks);
         }
     }

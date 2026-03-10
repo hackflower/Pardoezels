@@ -25,7 +25,7 @@ public class TaskItem
 
     public override string ToString()
     {
-        return $"{Id}. {Name}\nDescription: {Description}\nStatus: {Status.GetDescription()}\nPriority: {Priority}";
+        return $"ID: {Id} | Name: {Name} | Description: {Description} | Status: {Status.GetDescription()} | Priority: {Priority}";
     }
 }
 
