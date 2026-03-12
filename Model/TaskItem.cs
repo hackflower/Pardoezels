@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -21,7 +20,18 @@ public class TaskItem
     public Progress Status { get; set; } = Progress.NotStarted;
 
     public DateTime CreatedAt { get; set; }
-    public string? Priority { get; set; }
+
+    public enum Importance
+    {
+        [Description("Low")]
+        Low = 0,
+        [Description("Normal")]
+        Normal = 1,
+        [Description("High")]
+        High = 2
+    }
+
+    public Importance Priority { get; set; }
 
     public override string ToString()
     {

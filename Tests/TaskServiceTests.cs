@@ -20,7 +20,7 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("test description", "test task", "High");
+        service.AddTask("test description", "test task", TaskItem.Importance.High);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
@@ -43,7 +43,7 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("test description", "test task", "High", TaskItem.Progress.NotStarted);
+        service.AddTask("test description", "test task", TaskItem.Importance.High);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
@@ -67,7 +67,7 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("test description", "test task", "High");
+        service.AddTask("test description", "test task", TaskItem.Importance.High);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
@@ -91,7 +91,7 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("test description", "test task", "High");
+        service.AddTask("test description", "test task", TaskItem.Importance.High);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
@@ -115,7 +115,7 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("test description", "test task", "High");
+        service.AddTask("test description", "test task", TaskItem.Importance.High);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Single(allTasks);
@@ -135,8 +135,8 @@ public class TaskServiceTests
         ITaskRepository repository = new JsonTaskRepository(filePath);
         ITaskService service = new TaskService(repository);
 
-        service.AddTask("desc 1", "task 1", "High");
-        service.AddTask("desc 2", "task 2", "Medium");
+        service.AddTask("desc 1", "task 1", TaskItem.Importance.High);
+        service.AddTask("desc 2", "task 2", TaskItem.Importance.Normal);
 
         var allTasks = service.GetAllTasks().ToList();
         Assert.Equal(2, allTasks.Count);

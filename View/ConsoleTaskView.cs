@@ -1,91 +1,110 @@
 public class ConsoleTaskView : ITaskView
 {
     private readonly ITaskService _service;
+
     public ConsoleTaskView(ITaskService service)
     {
         _service = service;
     }
-    void DisplayTasks()
+
+    public void DisplayTasks(int amount, int offset = 0)
     {
         Efteldingen<TaskItem> allTasks = _service.GetAllTasks();
 
-        if (allTasks.Count == 0)
+        for (int i = offset; i < amount + offset; i++)
         {
-            Prompt("Task list is empty, add a task first.");
-            return;
-        }
+            if (i >= allTasks.Count)
+                break;
 
-        Efteldingen<string> taskStringList = new Efteldingen<string>();
-        foreach(TaskItem task in allTasks)
-        {
-            taskStringList.Add(task.ToString());
+            Console.WriteLine(allTasks[i]);
         }
-        Console.Clear();
-        TaskItem ChosenTask = allTasks[ShowMenu("==== ToDo List ====\n     Select a task to edit.", taskStringList.ToArray())];
-        EditTask(ChosenTask);
     }
 
-    void EditTask(TaskItem task)
+    public string EditTask()
     {
         string[] options =
         {
             "Edit Name",
             "Edit Description",
             "Change Status",
-            "Change Task Priority",
+            "Change Priority",
             "Remove Task",
-            "Exit"
+            "Back to Main"
         };
 
-            int choice = ShowMenu("==== Task Edit Menu ====", options) + 1;
+        Console.Clear();
+        Console.Write("==== Task Edit Menu ====\n\nEnter the ID of the task you want to edit: ");
+
+        int number;
+        while (!int.TryParse(Console.ReadLine(), out number))
+        {
+            Console.Clear();
+            Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
+        }
+
+        var task = _service.GetAllTasks().Find(number, (t, n) => t.Id == number);
+
+        if (!task.HasValue)
+        {
+            return "MainMenu";
+        }
+
+        while (true)
+        {
+            int choice = SelectOption("==== Task Edit Menu ====\n\n" + task.Value, options);
             switch (choice)
             {
+                case 0:
+                    _service.ChangeTaskName(task.Value.Id, Prompt("Enter new task name: "));
+                    continue;
+                    
                 case 1:
-                    _service.ChangeTaskName(task.Id, Prompt("Enter new task name: "));
-                    DisplayTasks();
-                    break;
-                case 2:
-                    _service.ChangeTaskDescription(task.Id, Prompt("Enter new task description: "));
-                    DisplayTasks();
-                    break;
-                case 3:
-                    string[] statusOptions =
-                    {
-                        "Not Started",
-                        "In Progress",
-                        "Completed"
-                    };
+                    _service.ChangeTaskDescription(task.Value.Id, Prompt("Enter new task description: "));
+                    continue;
 
-                    int statusChoice = ShowMenu("==== Change Task Status ====", statusOptions);
+                case 2:
+                    string[] statusOptions = Enum.GetValues<TaskItem.Progress>().Select(o => o.GetDescription()).ToArray();
+
+                    int statusChoice = SelectOption("==== Change Task Status ====", statusOptions);
 
                     TaskItem.Progress newStatus = (TaskItem.Progress)statusChoice;
 
-                    _service.ChangeTaskStatus(task.Id, newStatus);
+                    _service.ChangeTaskStatus(task.Value.Id, newStatus);
 
-                    DisplayTasks();
+                    continue;
+
+                case 3:
+                    string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
+
+                    int priorityChoice = SelectOption("==== Change Task Priority ====", priorityOptions);
+
+                    TaskItem.Importance newPriority = (TaskItem.Importance)priorityChoice;
+
+                    _service.ChangeTaskPriority(task.Value.Id, newPriority);
+
                     break;
+
                 case 4:
-                    _service.ChangeTaskPriority(task.Id, Prompt("Enter new task priority: "));
-                    DisplayTasks();
+                    _service.RemoveTask(task.Value.Id);
                     break;
+
                 case 5:
-                    _service.RemoveTask(task.Id);
-                    DisplayTasks();
-                    break;
-                case 6:
-                    return;
-                default:
-                    Console.WriteLine("Invalid option. Press any key to continue...");
-                    Console.ReadKey();
-                    break;
+                    break;;
             }
+
+            break;
         }
-    string Prompt(string prompt)
+
+        return "MainMenu";
+    }
+
+    public string Prompt(string prompt)
     {
         Console.Write(prompt);
         return Console.ReadLine();
     }
-    public int ShowMenu(string title, string[] options)
+
+    public int SelectOption(string title, string[] options)
     {
         int selectedIndex = 0;
         Console.CursorVisible = false;
@@ -133,37 +152,89 @@ public class ConsoleTaskView : ITaskView
         return selectedIndex;
     }
 
+    public string MainMenu()
+    {
+        string[] options =
+        {
+            "View Tasks",
+            "Add Task",
+            "Edit Task",
+            "Exit"
+        };
+
+        int choice = SelectOption("==== Main Menu ====", options);
+
+        switch (choice)
+        {
+            case 0:
+                Console.CursorVisible = false;
+                int offset = 0;
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("=== View Tasks ===\n");
+                    DisplayTasks(5, offset);
+
+                    Console.WriteLine("Page: (" + offset / 5 + "/" + _service.GetAllTasks().Count / 5 + ")");
+
+                    Console.WriteLine("\nUse arrows to navigate");
+
+                    Console.WriteLine("\nClick ENTER to continue...");
+                    ConsoleKey key = Console.ReadKey(true).Key;
+
+                    if (key == ConsoleKey.RightArrow && _service.GetAllTasks().Count > offset + 5)
+                        offset += 5;
+
+                    if (key == ConsoleKey.LeftArrow && offset >= 5)
+                        offset -= 5;
+
+                    if (key == ConsoleKey.Enter)
+                        break;
+                }
+                Console.CursorVisible = true;
+                return "MainMenu";
+
+            case 1:
+                Console.Clear();
+                Console.WriteLine("=== Add Task ===\n");
+
+                string name = Prompt("Enter task name: ");
+                string description = Prompt("Enter task description: ");
+                
+                string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
+
+                int priorityChoice = SelectOption("==== Set Task Priority ====", priorityOptions);
+
+                TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
+                _service.AddTask(description, name, priority);
+
+                return "MainMenu";
+
+            case 2:
+                return "EditTask";
+
+            case 3:
+                return "Exit";
+        }
+
+        return "Invalid";
+    }
+
     public void Run()
     {
+        string state = "MainMenu";
+
         while (true)
         {
-            string[] options =
-            {
-                "View Tasks",
-                "Add Task",
-                "Exit"
-            };
+            if (state == "MainMenu")
+                state = MainMenu();
 
-            int choice = ShowMenu("==== ToDo List ====", options) + 1;
-            switch (choice)
-            {
-                case 1:
-                    DisplayTasks();
-                    break;
-                case 2:
-                    string name = Prompt("Enter task name: ");
-                    string description = Prompt("Enter task description: ");
-                    string priority = Prompt("Enter task priority: " );
+            if (state == "EditTask")
+                state = EditTask();
 
-                    _service.AddTask(description, name, priority);
-                    break;
-                case 3:
-                    return;
-                default:
-                    Console.WriteLine("Invalid option. Press any key to continue...");
-                    Console.ReadKey();
-                    break;
-            }
+            if (state == "Exit")
+                break;
         }
     }
 }
