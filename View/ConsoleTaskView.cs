@@ -1,5 +1,3 @@
-using System.Security.Authentication.ExtendedProtection;
-
 public class ConsoleTaskView : ITaskView
 {
     private readonly ITaskService _service;
