@@ -1,10 +1,13 @@
 public class ConsoleTaskView : ITaskView
 {
+    public string? loggedInUser { get; set; }
     private readonly ITaskService _service;
+    private readonly IUserService _userService;
 
-    public ConsoleTaskView(ITaskService service)
+    public ConsoleTaskView(ITaskService taskService, IUserService userService)
     {
-        _service = service;
+        _service = taskService;
+        _userService = userService;
     }
 
     public void DisplayTasks(int amount, int offset = 0)
@@ -55,11 +58,11 @@ public class ConsoleTaskView : ITaskView
             switch (choice)
             {
                 case 0:
-                    _service.ChangeTaskName(task.Value.Id, Prompt("Enter new task name: "));
+                    _service.ChangeTaskName(task.Value.Id, GetInput("Enter new task name: "));
                     continue;
                     
                 case 1:
-                    _service.ChangeTaskDescription(task.Value.Id, Prompt("Enter new task description: "));
+                    _service.ChangeTaskDescription(task.Value.Id, GetInput("Enter new task description: "));
                     continue;
 
                 case 2:
@@ -98,10 +101,44 @@ public class ConsoleTaskView : ITaskView
         return "MainMenu";
     }
 
-    public string Prompt(string prompt)
+    public string GetInput(string title)
     {
-        Console.Write(prompt);
-        return Console.ReadLine();
+        string? input;
+        Console.Write(title);
+
+        while (string.IsNullOrEmpty(input = Console.ReadLine()))
+        {
+            Console.Clear();
+            Console.Write(title);
+        }
+
+        return input;
+    }
+
+    public string InputPassword(string title)
+    {
+        Console.Write(title);
+        string password = "";
+        ConsoleKeyInfo key;
+
+        do
+        {
+            key = Console.ReadKey(true);
+
+            if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+            {
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+            else if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+            {
+                password = password[0..^1];
+                Console.Write("\b \b");
+            }
+        } while (key.Key != ConsoleKey.Enter);
+
+        Console.WriteLine();
+        return password;
     }
 
     public int SelectOption(string title, string[] options)
@@ -199,9 +236,9 @@ public class ConsoleTaskView : ITaskView
                 Console.Clear();
                 Console.WriteLine("=== Add Task ===\n");
 
-                string name = Prompt("Enter task name: ");
-                string description = Prompt("Enter task description: ");
-                
+                string name = GetInput("Enter task name: ");
+                string description = GetInput("Enter task description: ");
+
                 string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
 
                 int priorityChoice = SelectOption("==== Set Task Priority ====", priorityOptions);
@@ -221,12 +258,69 @@ public class ConsoleTaskView : ITaskView
         return "Invalid";
     }
 
+    public string StartScreen()
+    {
+        int choice = SelectOption("==== Login / Register ====\n", new[] { "Login", "Register" });
+
+        if (choice == 0)
+        {
+            return Login();
+        }
+        else if (choice == 1)
+        {
+            return Register();
+        }
+
+        return "StartScreen";
+    }
+
+    public string Login()
+    {
+        Console.Clear();
+        Console.WriteLine("==== Login ====\n");
+
+        string email = GetInput("Enter your email: ");
+        string password = InputPassword("Enter your password: ");
+        bool isValidUser = _userService.ValidateUser(email, password);
+        if (isValidUser)
+        {
+            loggedInUser = _userService.GetLoggedInUser(email);
+            return "MainMenu";
+        }
+
+        Console.WriteLine("\nInvalid email or password.");
+        Console.ReadKey();
+
+        return "Login";
+    }
+
+    public string Register()
+    {
+        Console.Clear();
+        Console.WriteLine("==== Register ====\n");
+
+        string username = GetInput("Enter your username: ");
+        string email = GetInput("Enter your email: ");
+        string password = InputPassword("Enter your password: ");
+
+        var user = new User(username, email, password);
+        _userService.AddUser(user);
+
+        return "MainMenu";
+    }
+
     public void Run()
     {
-        string state = "MainMenu";
+        string state = "StartScreen";
 
         while (true)
         {
+            if (state == "StartScreen")
+                state = StartScreen();
+
+            if (state == "Login")
+                state = Login();
+
             if (state == "MainMenu")
                 state = MainMenu();
 

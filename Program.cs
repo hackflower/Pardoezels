@@ -4,8 +4,11 @@
     {
         string filePath = "tasks.json";
         ITaskRepository repository = new JsonTaskRepository(filePath);
-        ITaskService service = new TaskService(repository);
-        ITaskView view = new ConsoleTaskView(service);
+        IUserRepository userRepository = new JsonUserRepository("users.json");
+        ITaskService taskService = new TaskService(repository);
+        IUserService userService = new UserService(userRepository);
+        ITaskView view = new ConsoleTaskView(taskService, userService);
+        
         view.Run();
     }
 }
