@@ -2,6 +2,15 @@ public class ConsoleTaskView : ITaskView
 {
     private readonly ITaskService _service;
 
+    public enum TaskFilter
+    {
+        Id,
+        Name,
+        Description,
+        Priority,
+        Status
+    }
+
     public ConsoleTaskView(ITaskService service)
     {
         _service = service;
@@ -16,7 +25,14 @@ public class ConsoleTaskView : ITaskView
             if (i >= allTasks.Count)
                 break;
 
-            Console.WriteLine(allTasks[i]);
+            TaskItem task = allTasks[i];
+
+            Console.WriteLine(
+                $"{task.Id,-4} " +
+                $"{task.Name,-20} " +
+                $"{task.Description,-50} " +
+                $"{task.Status.GetDescription(),-15} " +
+                $"{task.Priority,-10}");
         }
     }
 
@@ -55,11 +71,11 @@ public class ConsoleTaskView : ITaskView
             switch (choice)
             {
                 case 0:
-                    _service.ChangeTaskName(task.Value.Id, Prompt("Enter new task name: "));
+                    _service.ChangeTaskName(task.Value.Id, GetInput("Enter new task name: "));
                     continue;
                     
                 case 1:
-                    _service.ChangeTaskDescription(task.Value.Id, Prompt("Enter new task description: "));
+                    _service.ChangeTaskDescription(task.Value.Id, GetInput("Enter new task description: "));
                     continue;
 
                 case 2:
@@ -98,10 +114,17 @@ public class ConsoleTaskView : ITaskView
         return "MainMenu";
     }
 
-    public string Prompt(string prompt)
+    public string GetInput(string title)
     {
-        Console.Write(prompt);
-        return Console.ReadLine();
+        string? input;
+        Console.Write(title);
+
+        while (string.IsNullOrEmpty(input = Console.ReadLine()))
+        {
+            Console.Clear();
+            Console.Write(title);
+        }
+        return input;
     }
 
     public int SelectOption(string title, string[] options)
@@ -167,29 +190,69 @@ public class ConsoleTaskView : ITaskView
         switch (choice)
         {
             case 0:
+                Efteldingen<TaskItem> tasks = _service.GetAllTasks();
                 Console.CursorVisible = false;
                 int offset = 0;
+
+                TaskFilter filter = TaskFilter.Id;
 
                 while (true)
                 {
                     Console.Clear();
                     Console.WriteLine("=== View Tasks ===\n");
-                    DisplayTasks(5, offset);
 
-                    Console.WriteLine("Page: (" + offset / 5 + "/" + _service.GetAllTasks().Count / 5 + ")");
+                    switch (filter)
+                    {
+                        case TaskFilter.Id:
+                            tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
+                            break;
 
-                    Console.WriteLine("\nUse arrows to navigate");
+                        case TaskFilter.Name:
+                            tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
+                            break;
+
+                        case TaskFilter.Description:
+                            tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
+                            break;
+
+                        case TaskFilter.Priority:
+                            tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
+                            break;
+
+                        case TaskFilter.Status:
+                            tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
+                            break;
+                    }
+
+                    Console.WriteLine($"{"ID",-4} {"Name",-20} {"Description",-50} {"Status",-15} {"Priority",-10}");
+                    Console.WriteLine(new string('-', 104) + "+");
+
+                    DisplayTasks(10, offset);
+
+                    Console.WriteLine(new string('-', 104) + "+");
+
+                    Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
+
+                    Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▲");
+                    Console.WriteLine($"          Sort on: {filter}");
+                    Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▼");
 
                     Console.WriteLine("\nClick ENTER to continue...");
                     ConsoleKey key = Console.ReadKey(true).Key;
 
-                    if (key == ConsoleKey.RightArrow && _service.GetAllTasks().Count > offset + 5)
-                        offset += 5;
+                    if (key == ConsoleKey.RightArrow && tasks.Count > offset + 10)
+                        offset += 10;
 
-                    if (key == ConsoleKey.LeftArrow && offset >= 5)
-                        offset -= 5;
+                    else if (key == ConsoleKey.LeftArrow && offset >= 10)
+                        offset -= 10;
 
-                    if (key == ConsoleKey.Enter)
+                    else if (key == ConsoleKey.UpArrow && filter < TaskFilter.Status)
+                        filter += 1;
+
+                    else if (key == ConsoleKey.DownArrow && filter > TaskFilter.Id)
+                        filter -= 1;
+
+                    else if (key == ConsoleKey.Enter)
                         break;
                 }
                 Console.CursorVisible = true;
@@ -199,8 +262,8 @@ public class ConsoleTaskView : ITaskView
                 Console.Clear();
                 Console.WriteLine("=== Add Task ===\n");
 
-                string name = Prompt("Enter task name: ");
-                string description = Prompt("Enter task description: ");
+                string name = GetInput("Enter task name: ");
+                string description = GetInput("Enter task description: ");
                 
                 string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
 
