@@ -1,13 +1,13 @@
 public class UserService : IUserService
 {
-    private List<User> _users;
+    private Efteldingen<User> _users;
     private readonly IUserRepository _repository;
 
     public UserService(IUserRepository repository)
     {
         _repository = repository;
 
-        _users = _repository.LoadUsers() ?? new List<User>();
+        _users = _repository.LoadUsers() ?? new Efteldingen<User>();
     }
 
     public void AddUser(User user)
@@ -18,9 +18,10 @@ public class UserService : IUserService
         _repository.SaveUsers(_users);
     }
 
-    public User? GetUserByEmail(string email)
+    public User GetUserByEmail(string email)
     {
-        return _users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        Efteldingen<User> users = _users.Filter(u => u.Email == email);
+        return users[0];
     }
 
     public bool ValidateUser(string email, string password)
@@ -31,10 +32,5 @@ public class UserService : IUserService
             return false;
 
         return user.Password == password;
-    }
-
-    public string? GetLoggedInUser(string loggedInEmail)
-    {
-        return _users.FirstOrDefault(u => u.Email == loggedInEmail)?.Username;
     }
 }

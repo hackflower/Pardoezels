@@ -1,6 +1,6 @@
 public class ConsoleTaskView : ITaskView
 {
-    public string? loggedInUser { get; set; }
+    public User? loggedInUser { get; set; }
     private readonly ITaskService _service;
     private readonly IUserService _userService;
 
@@ -215,7 +215,7 @@ public class ConsoleTaskView : ITaskView
             "Exit"
         };
 
-        int choice = SelectOption("==== Main Menu ====", options);
+        int choice = SelectOption($"==== Main Menu ====\n\nLogged in as: {loggedInUser!.Username}", options);
 
         switch (choice)
         {
@@ -300,7 +300,7 @@ public class ConsoleTaskView : ITaskView
                 int priorityChoice = SelectOption("==== Set Task Priority ====", priorityOptions);
 
                 TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
-                _service.AddTask(description, name, priority);
+                _service.AddTask(name, description, priority);
 
                 return "MainMenu";
 
@@ -316,7 +316,7 @@ public class ConsoleTaskView : ITaskView
 
     public string StartScreen()
     {
-        int choice = SelectOption("==== Login / Register ====\n", new[] { "Login", "Register" });
+        int choice = SelectOption("==== Login / Register ====", new[] { "Login", "Register" });
 
         if (choice == 0)
         {
@@ -340,7 +340,7 @@ public class ConsoleTaskView : ITaskView
         bool isValidUser = _userService.ValidateUser(email, password);
         if (isValidUser)
         {
-            loggedInUser = _userService.GetLoggedInUser(email);
+            loggedInUser = _userService.GetUserByEmail(email);
             return "MainMenu";
         }
 
@@ -361,6 +361,7 @@ public class ConsoleTaskView : ITaskView
 
         var user = new User(username, email, password);
         _userService.AddUser(user);
+        loggedInUser = _userService.GetUserByEmail(email);
 
         return "MainMenu";
     }

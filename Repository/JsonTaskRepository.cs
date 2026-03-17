@@ -3,8 +3,7 @@ using System.Text.Json;
 public class JsonTaskRepository : ITaskRepository
 {
     private readonly string _filePath;
-    public JsonTaskRepository(string filePath) => _filePath =
-   filePath;
+    public JsonTaskRepository(string filePath) => _filePath = filePath;
     public Efteldingen<TaskItem> LoadTasks()
     {
         if (!File.Exists(_filePath))

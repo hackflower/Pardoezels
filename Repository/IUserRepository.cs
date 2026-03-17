@@ -1,5 +1,5 @@
 public interface IUserRepository
 {
-    List<User> LoadUsers();
-    void SaveUsers(List<User> users);
+    Efteldingen<User> LoadUsers();
+    void SaveUsers(Efteldingen<User> users);
 }

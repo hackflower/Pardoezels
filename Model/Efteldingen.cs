@@ -129,6 +129,18 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
         return default;
     }
 
+    public Efteldingen<R> Map<R>(Func<T, R> selector)
+    {
+        var result = new Efteldingen<R>();
+
+        foreach (var item in _data)
+        {
+            result.Add(selector(item));
+        }
+
+        return result;
+    }
+
     private void Resize()
     {
         T[] newArray = new T[_data.Length * 2];
@@ -152,5 +164,10 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    internal Optional<User> Find(object value)
+    {
+        throw new NotImplementedException();
     }
 }
