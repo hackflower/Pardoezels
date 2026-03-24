@@ -104,7 +104,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     public IMyCollection<T> Filter(Func<T, bool> predicate)
     {
-        Efteldingen<T> result = new Efteldingen<T>();
+        Efteldingen<T> result = [];
 
         for (int i = 0; i < _count; i++)
         {
