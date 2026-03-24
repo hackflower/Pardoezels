@@ -10,10 +10,9 @@ public class TaskService : ITaskService
     public Efteldingen<TaskItem> GetAllTasks() => _tasks;
     public void AddTask(string name, string description, TaskItem.Importance priority)
     {
-        int newId = _tasks.Count > 0 ? _tasks[_tasks.Count - 1].Id + 1 : 1;
         var newTask = new TaskItem
         {
-            Id = newId,
+            Id = _tasks.Max((a, b) => a.Id.CompareTo(b.Id)).Id + 1,
             Name = name,
             Description = description,
             CreatedAt = DateTime.Now,

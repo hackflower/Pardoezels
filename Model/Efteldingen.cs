@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Text.Json;
 
-public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
+public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 {
     private T[] _data = null!;
     private int _count;
@@ -139,6 +139,16 @@ public class Efteldingen<T> : IEfteldingen<T>, IEnumerable<T>
         }
 
         return result;
+    }
+
+    public T Max(Comparison<T> comparison)
+    {
+        T max = _data[0];
+        for (int i = 1; i < _count; i++)
+            if (comparison(_data[i], max) > 0)
+                max = _data[i];
+
+        return max;
     }
 
     private void Resize()
