@@ -20,7 +20,7 @@ public class UserService : IUserService
 
     public User GetUserByEmail(string email)
     {
-        Efteldingen<User> users = _users.Filter(u => u.Email == email);
+        Efteldingen<User> users = (Efteldingen<User>)_users.Filter(u => u.Email == email);
         return users[0];
     }
 
