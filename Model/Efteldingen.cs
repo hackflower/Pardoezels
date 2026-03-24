@@ -5,7 +5,19 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 {
     private T[] _data = null!;
     private int _count;
+    private bool _dirty;
 
+    public bool Dirty
+    {
+        get
+        {
+            return _dirty;
+        }
+        set
+        {
+            _dirty = value;
+        }
+    }
     public int Count => _count;
 
     public T this[int index]
@@ -61,7 +73,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         }
     }
 
-    public Optional<T> Find<K>(K key, Func<T, K, bool> comparer)
+    public Optional<T> FindBy<K>(K key, Func<T, K, bool> comparer)
     {
         for (int i = 0; i < _count; i++)
         {
@@ -90,7 +102,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         }
     }
 
-    public Efteldingen<T> Filter(Func<T, bool> predicate)
+    public IMyCollection<T> Filter(Func<T, bool> predicate)
     {
         Efteldingen<T> result = new Efteldingen<T>();
 
@@ -102,6 +114,16 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
             }
         }
 
+        return result;
+    }
+
+    public R Reduce<R>(R initial, Func<R, T, R> accumulator)
+    {
+        R result = initial;
+        for (int i = 1; i < _count; i++)
+        {
+            result = accumulator(result, _data[i]);
+        }
         return result;
     }
 
@@ -179,5 +201,25 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
     internal Optional<User> Find(object value)
     {
         throw new NotImplementedException();
+    }
+
+    public T[] ToArray()
+    {
+        T[] array = new T[_count];
+        for (int i = 0; i < _count; i++)
+        {
+            array[i] = _data[i];
+        }
+        return array;
+    }
+
+    public IMyCollection<T> FromArray(T[] array)
+    {
+        Efteldingen<T> efteldingen = [];
+        for (int i = 0; i < _count; i++)
+        {
+            efteldingen.Add(array[i]);
+        }
+        return efteldingen;
     }
 }
