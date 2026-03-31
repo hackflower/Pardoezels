@@ -9,7 +9,7 @@ public class UserService : IUserService
     {
         _repository = repository;
 
-        _users = (Eftelinked<User>)_repository.LoadUsers();
+        _users = _repository.LoadUsers();
     }
 
     public void AddUser(User user)
@@ -22,8 +22,8 @@ public class UserService : IUserService
 
     public User GetUserByEmail(string email)
     {
-        Efteldingen<User> users = (Efteldingen<User>)_users.Filter(u => u.Email == email);
-        return users[0];
+        Eftelinked<User> users = (Eftelinked<User>)_users.Filter(u => u.Email == email);
+        return users.head!.Data;
     }
 
     public bool ValidateUser(string email, string password)

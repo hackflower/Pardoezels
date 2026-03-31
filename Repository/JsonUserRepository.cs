@@ -11,7 +11,8 @@ public class JsonUserRepository : IUserRepository
             return new Eftelinked<User>();
         }
         string json = File.ReadAllText(_filePath);
-        Eftelinked<User> users = JsonSerializer.Deserialize<Eftelinked<User>>(json) ?? new Eftelinked<User>();
+        User[] array = JsonSerializer.Deserialize<User[]>(json) ?? Array.Empty<User>();
+        Eftelinked<User> users = (Eftelinked<User>)new Eftelinked<User>().FromArray(array);
 
         return users;
     }

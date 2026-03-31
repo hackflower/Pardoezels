@@ -13,7 +13,7 @@ public class Node<T>
 
 public class Eftelinked<T> : IMyCollection<T>
 {
-    private Node<T>? head;
+    public Node<T>? head;
     private int _count;
     private bool _dirty;
 
