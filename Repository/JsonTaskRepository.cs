@@ -19,7 +19,7 @@ public class JsonTaskRepository : ITaskRepository
 
     public void SaveTasks(Efteldingen<TaskItem> tasks)
     {
-        string json = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
+        string json = JsonSerializer.Serialize(tasks.ToArray(), new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
     }
 }
