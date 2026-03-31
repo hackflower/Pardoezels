@@ -214,7 +214,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
     public IMyCollection<T> FromArray(T[] array)
     {
         Efteldingen<T> efteldingen = [];
-        for (int i = 0; i < _count; i++)
+        for (int i = 0; i < array.Length; i++)
         {
             efteldingen.Add(array[i]);
         }

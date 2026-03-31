@@ -120,6 +120,8 @@ public class Eftelinked<T> : IMyCollection<T>
             }
             current.Next = newNode;
         }
+
+        _count++;
     }
 
     public void Remove(T item)
