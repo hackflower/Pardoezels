@@ -5,7 +5,7 @@ public class TaskService : ITaskService
     public TaskService(ITaskRepository repository)
     {
         _repository = repository;
-        _tasks = (Efteldingen<TaskItem>)_repository.LoadTasks();
+        _tasks = _repository.LoadTasks();
     }
     public Efteldingen<TaskItem> GetAllTasks() => _tasks;
     public void AddTask(string name, string description, TaskItem.Importance priority)
