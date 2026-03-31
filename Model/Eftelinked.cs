@@ -14,10 +14,23 @@ public class Node<T>
 public class Eftelinked<T> : IMyCollection<T>
 {
     private Node<T>? head;
-    private int count;
-    public int Count => count;
+    private int _count;
+    private bool _dirty;
 
-    public Optional<T> Find<K>(K key, Func<T, K, bool> comparer)
+    public bool Dirty
+    {
+        get
+        {
+            return _dirty;
+        }
+        set
+        {
+            _dirty = value;
+        }
+    }
+    public int Count => _count;
+
+    public Optional<T> FindBy<K>(K key, Func<T, K, bool> comparer)
     {
         var current = head;
 
@@ -32,7 +45,7 @@ public class Eftelinked<T> : IMyCollection<T>
         return Optional<T>.None();
     }
 
-    public Eftelinked<T> Filter(Func<T, bool> predicate)
+    public IMyCollection<T> Filter(Func<T, bool> predicate)
     {
         var newList = new Eftelinked<T>();
         var current = head;
@@ -116,7 +129,7 @@ public class Eftelinked<T> : IMyCollection<T>
         if (head.Data.Equals(item))
         {
             head = head.Next;
-            count--;
+            _count--;
             return;
         }
 
@@ -127,7 +140,7 @@ public class Eftelinked<T> : IMyCollection<T>
             if (current.Next.Equals(item))
             {
                 current.Next = current.Next.Next;
-                count--;
+                _count--;
                 return;
             }
             current = current.Next;
