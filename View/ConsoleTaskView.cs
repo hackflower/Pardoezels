@@ -383,6 +383,9 @@ public class ConsoleTaskView : ITaskView
             if (state == "StartScreen")
                 state = StartScreen();
 
+            if (state == "Register")
+                state = Register();
+
             if (state == "Login")
                 state = Login();
 

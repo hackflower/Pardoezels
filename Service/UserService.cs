@@ -20,10 +20,11 @@ public class UserService : IUserService
         _repository.SaveUsers(_users);
     }
 
-    public User GetUserByEmail(string email)
+    public User? GetUserByEmail(string email)
     {
-        Eftelinked<User> users = (Eftelinked<User>)_users.Filter(u => u.Email == email);
-        return users.head!.Data;
+        var result = _users.FindBy(email, (user, key) => user.Email == key ? 0 : -1);
+
+        return result.HasValue ? result.Value : null;
     }
 
     public bool ValidateUser(string email, string password)
