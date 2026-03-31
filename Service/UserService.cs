@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
@@ -32,5 +34,17 @@ public class UserService : IUserService
             return false;
 
         return user.Password == password;
+    }
+
+    public bool UserExists(string email)
+    {
+        var user = GetUserByEmail(email);
+        return user != null;
+    }
+
+    public bool EmailValid(string email)
+    {
+        var emailPattern = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
+        return Regex.IsMatch(email, emailPattern);
     }
 }
