@@ -73,11 +73,11 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         }
     }
 
-    public Optional<T> FindBy<K>(K key, Func<T, K, bool> comparer)
+    public Optional<T> FindBy<K>(K key, Func<T, K, int> comparer)
     {
         for (int i = 0; i < _count; i++)
         {
-            if (comparer(_data[i], key))
+            if (comparer(_data[i], key) == 0)
             {
                 return Optional<T>.Some(_data[i]);
             }
@@ -153,6 +153,8 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     public Efteldingen<R> Map<R>(Func<T, R> selector)
     {
+        if (_count <= 0) throw new InvalidOperationException("Collection is empty.");
+
         var result = new Efteldingen<R>();
 
         foreach (var item in _data)
@@ -165,6 +167,8 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     public T Max(Comparison<T> comparison)
     {
+        if (_count <= 0) throw new InvalidOperationException("Collection is empty.");
+
         T max = _data[0];
         for (int i = 1; i < _count; i++)
             if (comparison(_data[i], max) > 0)
@@ -175,9 +179,9 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     private void Resize()
     {
-        T[] newArray = new T[_data.Length * 2];
+        T[] newArray = new T[_count * 2];
 
-        for (int i = 0; i < _data.Length; i++)
+        for (int i = 0; i < _count; i++)
         {
             newArray[i] = _data[i];
         }
@@ -196,11 +200,6 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
-    }
-
-    internal Optional<User> Find(object value)
-    {
-        throw new NotImplementedException();
     }
 
     public T[] ToArray()

@@ -5,7 +5,7 @@ public class TaskService : ITaskService
     public TaskService(ITaskRepository repository)
     {
         _repository = repository;
-        _tasks = _repository.LoadTasks();
+        _tasks = (Efteldingen<TaskItem>)_repository.LoadTasks();
     }
     public Efteldingen<TaskItem> GetAllTasks() => _tasks;
     public void AddTask(string name, string description, TaskItem.Importance priority)
@@ -25,7 +25,7 @@ public class TaskService : ITaskService
     }
     public void RemoveTask(int id)
     {
-        var task = _tasks.FindBy(id, (t, i) => t.Id == id);
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
             _tasks.Remove(task.Value);
@@ -34,7 +34,7 @@ public class TaskService : ITaskService
     }
     public void ChangeTaskStatus(int id, TaskItem.Progress status)
     {
-        var task = _tasks.FindBy(id, (t, i) => t.Id == id);
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
             task.Value.Status = status;
@@ -44,7 +44,7 @@ public class TaskService : ITaskService
 
     public void ChangeTaskName(int id, string name)
     {
-        var task = _tasks.FindBy(id, (t, i) => t.Id == id);
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
             task.Value.Name = name;
@@ -54,7 +54,7 @@ public class TaskService : ITaskService
 
     public void ChangeTaskDescription(int id, string desc)
     {
-        var task = _tasks.FindBy(id, (t, i) => t.Id == id);
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
             task.Value.Description = desc;
@@ -64,7 +64,7 @@ public class TaskService : ITaskService
 
     public void ChangeTaskPriority(int id, TaskItem.Importance priority)
     {
-        var task = _tasks.FindBy(id, (t, i) => t.Id == id);
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
             task.Value.Priority = priority;
