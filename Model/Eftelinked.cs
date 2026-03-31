@@ -183,4 +183,22 @@ public class Eftelinked<T> : IMyCollection<T>
         }
         return newList;
     }
+
+    public T Max(Comparison<T> comparison)
+    {
+        if (head == null) throw new InvalidOperationException("Collection is empty.");
+
+        T max = head.Data;
+        var current = head.Next;
+
+        while (current != null)
+        {
+            if (comparison(current.Data, max) > 0)
+            {
+                max = current.Data;
+            }
+        }
+
+        return max;
+    }
 }
