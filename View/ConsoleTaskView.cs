@@ -61,7 +61,7 @@ public class ConsoleTaskView : ITaskView
             Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
         }
 
-        var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id == number);
+        var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
 
         if (!task.HasValue)
         {

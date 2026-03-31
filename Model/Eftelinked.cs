@@ -30,13 +30,13 @@ public class Eftelinked<T> : IMyCollection<T>
     }
     public int Count => _count;
 
-    public Optional<T> FindBy<K>(K key, Func<T, K, bool> comparer)
+    public Optional<T> FindBy<K>(K key, Func<T, K, int> comparer)
     {
         var current = head;
 
         while (current != null)
         {
-            if (comparer(current.Data, key))
+            if (comparer(current.Data, key) == 0)
             {
                 return Optional<T>.Some(current.Data);
             }

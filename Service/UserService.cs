@@ -1,13 +1,13 @@
 public class UserService : IUserService
 {
-    private Efteldingen<User> _users;
     private readonly IUserRepository _repository;
+    private Eftelinked<User> _users;
 
     public UserService(IUserRepository repository)
     {
         _repository = repository;
 
-        _users = _repository.LoadUsers() ?? new Efteldingen<User>();
+        _users = (Eftelinked<User>)_repository.LoadUsers();
     }
 
     public void AddUser(User user)
