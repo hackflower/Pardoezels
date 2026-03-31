@@ -12,7 +12,7 @@ public class TaskService : ITaskService
     {
         var newTask = new TaskItem
         {
-            Id = _tasks.Max((a, b) => a.Id.CompareTo(b.Id)).Id + 1,
+            Id = _tasks.Count > 0 ? _tasks.Max((a, b) => a.Id.CompareTo(b.Id)).Id + 1 : 1,
             Name = name,
             Description = description,
             CreatedAt = DateTime.Now,

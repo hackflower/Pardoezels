@@ -47,4 +47,18 @@ public class UserService : IUserService
         var emailPattern = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
         return Regex.IsMatch(email, emailPattern);
     }
+
+    public bool UserValid(User user)
+    {
+        if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
+            return false;
+
+        if (!EmailValid(user.Email))
+            return false;
+
+        if (UserExists(user.Email))
+            return false;
+
+        return true;
+    }
 }

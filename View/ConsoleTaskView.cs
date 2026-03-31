@@ -360,6 +360,14 @@ public class ConsoleTaskView : ITaskView
         string password = InputPassword("Enter your password: ");
 
         var user = new User(username, email, password);
+
+        if (!_userService.UserValid(user))
+        {
+            Console.WriteLine("\nInvalid user details. Make sure your email is valid and not already in use.");
+            Console.ReadKey();
+            return "Register";
+        }
+
         _userService.AddUser(user);
         loggedInUser = _userService.GetUserByEmail(email);
 

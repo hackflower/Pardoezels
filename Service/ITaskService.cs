@@ -1,7 +1,7 @@
 public interface ITaskService
 {
     Efteldingen<TaskItem> GetAllTasks();
-    void AddTask(string description, string name, TaskItem.Importance priority);
+    void AddTask(string name, string descriptions, TaskItem.Importance priority);
     void RemoveTask(int id);
     void ChangeTaskStatus(int id, TaskItem.Progress status);
     void ChangeTaskDescription(int id, string desc);
