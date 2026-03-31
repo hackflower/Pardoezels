@@ -19,7 +19,7 @@ public class JsonUserRepository : IUserRepository
 
     public void SaveUsers(Eftelinked<User> users)
     {
-        string json = JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true });
+        string json = JsonSerializer.Serialize(users.ToArray(), new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
     }
 }
