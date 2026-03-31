@@ -146,4 +146,41 @@ public class Eftelinked<T> : IMyCollection<T>
             current = current.Next;
         }
     }
+
+    public R Reduce<R>(R initial, Func<R, T, R> accumulator)
+    {
+        R result = initial;
+        var current = head;
+
+        while (current != null)
+        {
+            result = accumulator(result, current.Data);
+            current = current.Next;
+        }
+        return result;
+    }
+
+    public T[] ToArray()
+    {
+        T[] array = new T[_count];
+        var current = head;
+        int index = 0;
+
+        while (current != null)
+        {
+            array[index++] = current.Data;
+            current = current.Next;
+        }
+        return array;
+    }
+
+    public IMyCollection<T> FromArray(T[] array)
+    {
+        var newList = new Eftelinked<T>();
+        foreach (var item in array)
+        {
+            newList.Add(item);
+        }
+        return newList;
+    }
 }
