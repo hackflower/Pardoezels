@@ -14,7 +14,7 @@ public class UserService : IUserService
 
     public void AddUser(User user)
     {
-        user.Id = _users.Count > 0 ? _users.Max(u => u.Id) + 1 : 1;
+        user.Id = _users.Count > 0 ? _users.Max((a, b) => a.Id.CompareTo(b.Id)).Id + 1 : 1;
 
         _users.Add(user);
         _repository.SaveUsers(_users);

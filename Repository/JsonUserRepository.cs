@@ -4,19 +4,19 @@ public class JsonUserRepository : IUserRepository
 {
     private readonly string _filePath;
     public JsonUserRepository(string filePath) => _filePath = filePath;
-    public IMyCollection<User> LoadUsers()
+    public Eftelinked<User> LoadUsers()
     {
         if (!File.Exists(_filePath))
         {
-            return new Efteldingen<User>();
+            return new Eftelinked<User>();
         }
         string json = File.ReadAllText(_filePath);
-        IMyCollection<User> users = JsonSerializer.Deserialize<IMyCollection<User>>(json) ?? new Efteldingen<User>();
+        Eftelinked<User> users = JsonSerializer.Deserialize<Eftelinked<User>>(json) ?? new Eftelinked<User>();
 
         return users;
     }
 
-    public void SaveUsers(IMyCollection<User> users)
+    public void SaveUsers(Eftelinked<User> users)
     {
         string json = JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
