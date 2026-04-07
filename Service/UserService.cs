@@ -62,4 +62,9 @@ public class UserService : IUserService
 
         return true;
     }
+
+    public Eftelinked<User> GetAllUsers()
+    {
+        return _users;
+    }
 }

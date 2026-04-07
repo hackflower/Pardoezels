@@ -6,6 +6,7 @@ public class TaskItem
     public int Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
+    public required User AssignedUser { get; set; }
 
     public enum Progress
     {
