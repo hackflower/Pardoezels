@@ -8,7 +8,7 @@ public class TaskService : ITaskService
         _tasks = _repository.LoadTasks();
     }
     public Efteldingen<TaskItem> GetAllTasks() => _tasks;
-    public void AddTask(string name, string description, TaskItem.Importance priority, User user)
+    public void AddTask(string name, string description, TaskItem.Importance priority, Efteldingen<User> users)
     {
         var newTask = new TaskItem
         {
@@ -18,7 +18,7 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.Now,
             Status = TaskItem.Progress.NotStarted,
             Priority = priority,
-            AssignedUser = user
+            AssignedUsers = users
         };
 
         _tasks.Add(newTask);
@@ -73,12 +73,12 @@ public class TaskService : ITaskService
         }
     }
 
-    public void ChangeTaskAssignedUser(int id, User user)
+    public void AddAssignedUser(int id, User user)
     {
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
-            task.Value.AssignedUser = user;
+            task.Value.AssignedUsers.Add(user);
             _repository.SaveTasks(_tasks);
         }
     }

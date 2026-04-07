@@ -36,7 +36,8 @@ public class ConsoleTaskView : ITaskView
                 $"{task.Description,-55} " +
                 $"{task.Status.GetDescription(),-15} " +
                 $"{task.Priority,-10} " +
-                $"{task.AssignedUser.Username,-10}");
+                $"{string.Join(", ", task.AssignedUsers.Select(u => u.Username)),-20}"
+            );
         }
     }
 
@@ -50,7 +51,7 @@ public class ConsoleTaskView : ITaskView
             "Edit Priority",
             "Add dependency",
             "Remove dependency",
-            "Edit Assigned User",
+            "Add Assigned User",
             "Remove Task",
             "Back to Main"
         };
@@ -67,7 +68,7 @@ public class ConsoleTaskView : ITaskView
 
         var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
 
-        if (loggedInUser != task.Value.AssignedUser)
+        if (loggedInUser == null || !task.HasValue || !task.Value.AssignedUsers.Any(u => u.Id == loggedInUser.Id))
         {
             Console.WriteLine("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
             Console.ReadKey();
@@ -151,13 +152,28 @@ public class ConsoleTaskView : ITaskView
                     break;
 
                 case 6:
+                    if (_userService.GetAllUsers().Count == 0)
+                    {
+                        Console.WriteLine("\nNo users available to assign. Press any key to continue...");
+                        Console.ReadKey();
+                        break;
+                    }
+
+                    if (task.Value.AssignedUsers.Count >= 3)
+                    {
+                        Console.WriteLine("\nThis task has reached the maximum number of assigned users. Press any key to continue...");
+                        Console.ReadKey();
+                        break;
+                    }
+
+
                     string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
 
-                    int userChoice = SelectOption("==== Change Assigned User ====", userAssignmentOptions);
+                    int userChoice = SelectOption("==== Add Assigned User ====", userAssignmentOptions);
 
                     User newAssignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[userChoice], (u, username) => u.Username == username ? 0 : -1).Value;
 
-                    _service.ChangeTaskAssignedUser(task.Value.Id, newAssignedUser);
+                    _service.AddAssignedUser(task.Value.Id, newAssignedUser);
 
                     break;
 
@@ -319,7 +335,7 @@ public class ConsoleTaskView : ITaskView
                             break;
                     }
 
-                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10} {"Assigned User",-15}");
+                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10} {"Assigned Users",-15}");
                     Console.WriteLine(new string('-', 136) + "+");
 
                     DisplayTasks(10, offset);
@@ -371,7 +387,7 @@ public class ConsoleTaskView : ITaskView
                 User assignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[SelectOption("==== Assign User to Task ====", userAssignmentOptions)], (u, username) => u.Username == username ? 0 : -1).Value;
                 TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
 
-                _service.AddTask(name, description, priority, assignedUser);
+                _service.AddTask(name, description, priority, new Efteldingen<User> { assignedUser });
 
                 return "MainMenu";
 
