@@ -222,7 +222,9 @@ public class ConsoleTaskView : ITaskView
             case 0:
                 Efteldingen<TaskItem> tasks = _service.GetAllTasks();
                 Console.CursorVisible = false;
+
                 int offset = 0;
+                bool orderAsc = false;
 
                 TaskFilter filter = TaskFilter.Id;
 
@@ -234,22 +236,32 @@ public class ConsoleTaskView : ITaskView
                     switch (filter)
                     {
                         case TaskFilter.Id:
+                            if (orderAsc) tasks.Sort((b, a) => a.Id.CompareTo(b.Id));
+                            else
                             tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
                             break;
 
                         case TaskFilter.Name:
+                            if (orderAsc) tasks.Sort((b, a) => a.Name.CompareTo(b.Name));
+                            else
                             tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
                             break;
 
                         case TaskFilter.Description:
+                            if (orderAsc) tasks.Sort((b, a) => a.Description.CompareTo(b.Description));
+                            else
                             tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
                             break;
 
                         case TaskFilter.Priority:
+                            if (orderAsc) tasks.Sort((b, a) => a.Priority.CompareTo(b.Priority));
+                            else
                             tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
                             break;
 
                         case TaskFilter.Status:
+                            if (orderAsc) tasks.Sort((b, a) => a.Status.CompareTo(b.Status));
+                            else
                             tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
                             break;
                     }
@@ -264,9 +276,9 @@ public class ConsoleTaskView : ITaskView
                     Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
 
                     Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▲");
-                    Console.WriteLine($"          Sort on: {filter}");
+                    Console.WriteLine($"          Sort on: {filter} {(orderAsc ? "(Asc)" : "(Desc)")}");
                     Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▼");
-
+                    Console.WriteLine("\nPress TAB to switch sorting order...");
                     Console.WriteLine("\nClick ENTER to continue...");
                     ConsoleKey key = Console.ReadKey(true).Key;
 
@@ -281,6 +293,9 @@ public class ConsoleTaskView : ITaskView
 
                     else if (key == ConsoleKey.DownArrow && filter > TaskFilter.Id)
                         filter -= 1;
+
+                    else if (key == ConsoleKey.Tab)
+                        orderAsc = !orderAsc;
 
                     else if (key == ConsoleKey.Enter)
                         break;
