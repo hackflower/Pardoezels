@@ -1,14 +1,23 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 public class TaskItem
 {
     public int Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
-    public Efteldingen<TaskItem> Dependencies { get; set; } = [];
     public required Efteldingen<User> AssignedUsers { get; set; }
 
+    [JsonIgnore]
+    public Efteldingen<TaskItem> Dependencies { get; set; } = [];
+
+    [JsonPropertyName("Dependencies")]
+    public TaskItem[] DependenciesArray
+    {
+        get => Dependencies.ToArray();
+    }
+    public required User AssignedUser { get; set; }
 
     public enum Progress
     {
