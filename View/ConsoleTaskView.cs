@@ -151,10 +151,6 @@ public class ConsoleTaskView : ITaskView
                     break;
 
                 case 6:
-                    _service.RemoveTask(task.Value.Id);
-                    break;
-
-                case 7:
                     string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
 
                     int userChoice = SelectOption("==== Change Assigned User ====", userAssignmentOptions);
@@ -165,11 +161,11 @@ public class ConsoleTaskView : ITaskView
 
                     break;
 
-                case 9:
+                case 7:
                     _service.RemoveTask(task.Value.Id);
                     break;
 
-                case 10:
+                case 8:
                     break;;
             }
 
