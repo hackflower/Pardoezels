@@ -17,7 +17,6 @@ public class TaskItem
     {
         get => Dependencies.ToArray();
     }
-    public required User AssignedUser { get; set; }
 
     public enum Progress
     {
