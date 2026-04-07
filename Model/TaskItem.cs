@@ -7,6 +7,8 @@ public class TaskItem
     public required string Name { get; set; }
     public required string Description { get; set; }
     public Efteldingen<TaskItem> Dependencies { get; set; } = [];
+    public required User AssignedUser { get; set; }
+
 
     public enum Progress
     {

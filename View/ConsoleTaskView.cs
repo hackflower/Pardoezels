@@ -35,7 +35,8 @@ public class ConsoleTaskView : ITaskView
                 $"{task.Name,-30} " +
                 $"{task.Description,-55} " +
                 $"{task.Status.GetDescription(),-15} " +
-                $"{task.Priority,-10}");
+                $"{task.Priority,-10} " +
+                $"{task.AssignedUser.Username,-10}");
         }
     }
 
@@ -49,6 +50,7 @@ public class ConsoleTaskView : ITaskView
             "Edit Priority",
             "Add dependency",
             "Remove dependency",
+            "Edit Assigned User",
             "Remove Task",
             "Back to Main"
         };
@@ -64,6 +66,13 @@ public class ConsoleTaskView : ITaskView
         }
 
         var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
+
+        if (loggedInUser != task.Value.AssignedUser)
+        {
+            Console.WriteLine("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
+            Console.ReadKey();
+            return "MainMenu";
+        }
 
         if (!task.HasValue)
         {
@@ -146,6 +155,21 @@ public class ConsoleTaskView : ITaskView
                     break;
 
                 case 7:
+                    string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
+
+                    int userChoice = SelectOption("==== Change Assigned User ====", userAssignmentOptions);
+
+                    User newAssignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[userChoice], (u, username) => u.Username == username ? 0 : -1).Value;
+
+                    _service.ChangeTaskAssignedUser(task.Value.Id, newAssignedUser);
+
+                    break;
+
+                case 9:
+                    _service.RemoveTask(task.Value.Id);
+                    break;
+
+                case 10:
                     break;;
             }
 
@@ -299,12 +323,12 @@ public class ConsoleTaskView : ITaskView
                             break;
                     }
 
-                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10}");
-                    Console.WriteLine(new string('-', 124) + "+");
+                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10} {"Assigned User",-15}");
+                    Console.WriteLine(new string('-', 136) + "+");
 
                     DisplayTasks(10, offset);
 
-                    Console.WriteLine(new string('-', 124) + "+");
+                    Console.WriteLine(new string('-', 136) + "+");
 
                     Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
 
@@ -344,11 +368,14 @@ public class ConsoleTaskView : ITaskView
                 string description = GetInput("Enter task description: ");
                 
                 string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
+                string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
 
                 int priorityChoice = SelectOption("==== Set Task Priority ====", priorityOptions);
 
+                User assignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[SelectOption("==== Assign User to Task ====", userAssignmentOptions)], (u, username) => u.Username == username ? 0 : -1).Value;
                 TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
-                _service.AddTask(name, description, priority);
+
+                _service.AddTask(name, description, priority, assignedUser);
 
                 return "MainMenu";
 

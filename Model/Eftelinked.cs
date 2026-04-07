@@ -148,6 +148,18 @@ public class Eftelinked<T> : IMyCollection<T>
             current = current.Next;
         }
     }
+    public Eftelinked<R> Select<R>(Func<T, R> selector)
+    {
+        var newList = new Eftelinked<R>();
+        var current = head;
+
+        while (current != null)
+        {
+            newList.Add(selector(current.Data));
+            current = current.Next;
+        }
+        return newList;
+    }
 
     public R Reduce<R>(R initial, Func<R, T, R> accumulator)
     {
