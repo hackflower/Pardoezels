@@ -45,8 +45,10 @@ public class ConsoleTaskView : ITaskView
         {
             "Edit Name",
             "Edit Description",
-            "Change Status",
-            "Change Priority",
+            "Edit Status",
+            "Edit Priority",
+            "Add dependency",
+            "Remove dependency",
             "Remove Task",
             "Back to Main"
         };
@@ -84,6 +86,12 @@ public class ConsoleTaskView : ITaskView
                 case 2:
                     string[] statusOptions = Enum.GetValues<TaskItem.Progress>().Select(o => o.GetDescription()).ToArray();
 
+                    bool allDone = true;
+                    for (int i = 0; i < task.Value.Dependencies.Count; i++)
+                        if (task.Value.Dependencies[i].Status != TaskItem.Progress.Completed) allDone = false;
+
+                    if (!allDone) continue;
+
                     int statusChoice = SelectOption("==== Change Task Status ====", statusOptions);
 
                     TaskItem.Progress newStatus = (TaskItem.Progress)statusChoice;
@@ -104,10 +112,40 @@ public class ConsoleTaskView : ITaskView
                     break;
 
                 case 4:
-                    _service.RemoveTask(task.Value.Id);
+                    Console.Clear();
+                    Console.Write("==== Task Edit Menu ====\n\nEnter the ID of the task you want to add as dependency: ");
+
+                    int id;
+                    while (!int.TryParse(Console.ReadLine(), out id))
+                    {
+                        Console.Clear();
+                        Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
+                    }
+
+                    var taskToAdd = _service.GetAllTasks().FindBy(id, (t, n) => t.Id.CompareTo(id));
+                    if (taskToAdd.HasValue) task.Value.Dependencies.Add(taskToAdd.Value);
                     break;
 
                 case 5:
+                    Console.Clear();
+                    Console.Write("==== Task Edit Menu ====\n\nEnter the ID of the task you want to remove from dependencies: ");
+
+                    int idOfTask;
+                    while (!int.TryParse(Console.ReadLine(), out idOfTask))
+                    {
+                        Console.Clear();
+                        Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
+                    }
+
+                    var taskToRemove = _service.GetAllTasks().FindBy(idOfTask, (t, n) => t.Id.CompareTo(idOfTask));
+                    if (taskToRemove.HasValue) task.Value.Dependencies.Remove(taskToRemove.Value);
+                    break;
+
+                case 6:
+                    _service.RemoveTask(task.Value.Id);
+                    break;
+
+                case 7:
                     break;;
             }
 
@@ -237,32 +275,27 @@ public class ConsoleTaskView : ITaskView
                     {
                         case TaskFilter.Id:
                             if (orderAsc) tasks.Sort((b, a) => a.Id.CompareTo(b.Id));
-                            else
-                            tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
+                            else tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
                             break;
 
                         case TaskFilter.Name:
                             if (orderAsc) tasks.Sort((b, a) => a.Name.CompareTo(b.Name));
-                            else
-                            tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
+                            else tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
                             break;
 
                         case TaskFilter.Description:
                             if (orderAsc) tasks.Sort((b, a) => a.Description.CompareTo(b.Description));
-                            else
-                            tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
+                            else tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
                             break;
 
                         case TaskFilter.Priority:
                             if (orderAsc) tasks.Sort((b, a) => a.Priority.CompareTo(b.Priority));
-                            else
-                            tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
+                            else tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
                             break;
 
                         case TaskFilter.Status:
                             if (orderAsc) tasks.Sort((b, a) => a.Status.CompareTo(b.Status));
-                            else
-                            tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
+                            else tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
                             break;
                     }
 
@@ -276,7 +309,7 @@ public class ConsoleTaskView : ITaskView
                     Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
 
                     Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▲");
-                    Console.WriteLine($"          Sort on: {filter} {(orderAsc ? "(Asc)" : "(Desc)")}");
+                    Console.WriteLine($"          Sort on: {filter} {(orderAsc ? "(DESC)" : "(ASC)")}");
                     Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▼");
                     Console.WriteLine("\nPress TAB to switch sorting order...");
                     Console.WriteLine("\nClick ENTER to continue...");
