@@ -119,7 +119,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
     public R Reduce<R>(R initial, Func<R, T, R> accumulator)
     {
         R result = initial;
-        for (int i = 1; i < _count; i++)
+        for (int i = 0; i < _count; i++)
         {
             result = accumulator(result, _data[i]);
         }
