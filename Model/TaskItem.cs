@@ -9,7 +9,7 @@ public class TaskItem
     public required string Description { get; set; }
 
     [JsonIgnore]
-    public required Efteldingen<int> AssignedUsersIds { get; set; } = [];
+    public Efteldingen<int> AssignedUsersIds { get; set; } = [];
 
     [JsonIgnore]
     public Efteldingen<int> DependenciesIds { get; set; } = [];
@@ -18,12 +18,14 @@ public class TaskItem
     public int[] DependenciesArray
     {
         get => DependenciesIds.ToArray();
+        set => DependenciesIds = (Efteldingen<int>)new Efteldingen<int>().FromArray(value ?? []);
     }
 
     [JsonPropertyName("AssignedUsers")]
     public int[] AssignedUsersArray
     {
         get => AssignedUsersIds.ToArray();
+        set => AssignedUsersIds = (Efteldingen<int>)new Efteldingen<int>().FromArray(value ?? []);
     }
 
     public enum Progress
