@@ -169,6 +169,13 @@ public class ConsoleTaskView : ITaskView
 
                     User newAssignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[userChoice], (u, username) => u.Username == username ? 0 : -1).Value;
 
+                    if (task.Value.AssignedUsersIds.FindBy(newAssignedUser.Id, (u, id) => u.CompareTo(id)).HasValue)
+                    {
+                        Console.WriteLine("\nThis user is already assigned to the task. Press any key to continue...");
+                        Console.ReadKey();
+                        break;
+                    }
+
                     _service.AddAssignedUser(task.Value.Id, newAssignedUser);
 
                     break;

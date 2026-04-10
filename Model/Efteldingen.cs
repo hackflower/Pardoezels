@@ -150,6 +150,17 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         return default;
     }
 
+    public Efteldingen<R> Select<R>(Func<T, R> selector)
+    {
+        var newList = new Efteldingen<R>();
+
+        for (int i = 0; i < _count; i++)
+        {
+            newList.Add(selector(_data[i]));
+        }
+        return newList;
+    }
+
     public Efteldingen<R> Map<R>(Func<T, R> selector)
     {
         if (_count <= 0) throw new InvalidOperationException("Collection is empty.");
