@@ -35,9 +35,8 @@ public class ConsoleTaskView : ITaskView
                 $"{task.Name,-30} " +
                 $"{task.Description,-55} " +
                 $"{task.Status.GetDescription(),-15} " +
-                $"{task.Priority,-20} " +
-                $"{task.AssignedUsers.Reduce("", (acc, user) => acc + user.Username + ", "),-30} " +
-                $"{task.Dependencies.Reduce("", (acc, task) => acc + task.Name + ", "),-30}"
+                $"{task.Priority,-10} " +
+                $"{string.Join(", ", task.AssignedUsersIds.Select(u => _userService.GetUserById(u)?.Username ?? "Unknown")),-20}"
             );
         }
     }
@@ -95,8 +94,8 @@ public class ConsoleTaskView : ITaskView
                     string[] statusOptions = Enum.GetValues<TaskItem.Progress>().Select(o => o.GetDescription()).ToArray();
 
                     bool allDone = true;
-                    for (int i = 0; i < task.Value.Dependencies.Count; i++)
-                        if (task.Value.Dependencies[i].Status != TaskItem.Progress.Completed) allDone = false;
+                    for (int i = 0; i < task.Value.DependenciesIds.Count; i++)
+                        if (task.Value.DependenciesIds[i].Status != TaskItem.Progress.Completed) allDone = false;
 
                     if (!allDone) continue;
 
@@ -131,7 +130,7 @@ public class ConsoleTaskView : ITaskView
                     }
 
                     var taskToAdd = _service.GetAllTasks().FindBy(id, (t, n) => t.Id.CompareTo(id));
-                    if (taskToAdd.HasValue) task.Value.Dependencies.Add(taskToAdd.Value);
+                    if (taskToAdd.HasValue) task.Value.DependenciesIds.Add(taskToAdd.Value);
                     break;
 
                 case 5:
@@ -146,7 +145,7 @@ public class ConsoleTaskView : ITaskView
                     }
 
                     var taskToRemove = _service.GetAllTasks().FindBy(idOfTask, (t, n) => t.Id.CompareTo(idOfTask));
-                    if (taskToRemove.HasValue) task.Value.Dependencies.Remove(taskToRemove.Value);
+                    if (taskToRemove.HasValue) task.Value.DependenciesIds.Remove(taskToRemove.Value);
                     break;
 
                 case 6:
@@ -157,14 +156,14 @@ public class ConsoleTaskView : ITaskView
                         break;
                     }
 
-                    if (task.Value.AssignedUsers.Any(u => u.Id == loggedInUser.Id))
+                    if (task.Value.AssignedUsersIds.Any(u => u.Id == loggedInUser.Id))
                     {
                         Console.WriteLine("\nYou are already assigned to this task. Press any key to continue...");
                         Console.ReadKey();
                         break;
                     }
 
-                    if (task.Value.AssignedUsers.Count >= 3)
+                    if (task.Value.AssignedUsersIds.Count >= 3)
                     {
                         Console.WriteLine("\nThis task has reached the maximum number of assigned users. Press any key to continue...");
                         Console.ReadKey();
@@ -340,12 +339,12 @@ public class ConsoleTaskView : ITaskView
                             break;
                     }
 
-                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-20} {"Assigned Users",-30} {"Dependencies",-30}");
-                    Console.WriteLine(new string('-', 186) + "+");
+                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10} {"Assigned Users",-15}");
+                    Console.WriteLine(new string('-', 136) + "+");
 
                     DisplayTasks(10, offset);
 
-                    Console.WriteLine(new string('-', 186) + "+");
+                    Console.WriteLine(new string('-', 136) + "+");
 
                     Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
 
