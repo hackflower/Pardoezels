@@ -26,6 +26,13 @@ public class UserService : IUserService
 
         return result.HasValue ? result.Value : null;
     }
+    
+    public User? GetUserById(int id)
+    {
+        var result = _users.FindBy(id, (user, key) => user.Id == key ? 0 : -1);
+
+        return result.HasValue ? result.Value : null;
+    }
 
     public bool ValidateUser(string email, string password)
     {

@@ -8,7 +8,7 @@ public class TaskService : ITaskService
         _tasks = _repository.LoadTasks();
     }
     public Efteldingen<TaskItem> GetAllTasks() => _tasks;
-    public void AddTask(string name, string description, TaskItem.Importance priority, Efteldingen<User> users)
+    public void AddTask(string name, string description, TaskItem.Importance priority, int user)
     {
         var newTask = new TaskItem
         {
@@ -18,7 +18,7 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.Now,
             Status = TaskItem.Progress.NotStarted,
             Priority = priority,
-            AssignedUsersIds = users
+            AssignedUsersIds = user,
         };
 
         _tasks.Add(newTask);
