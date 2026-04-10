@@ -9,7 +9,17 @@ public class TaskItem
     public required string Description { get; set; }
 
     [JsonIgnore]
+<<<<<<< HEAD
     public required Efteldingen<User> AssignedUsers { get; set; }
+=======
+    public required Efteldingen<User> AssignedUsers { get; set; } = [];
+
+    [JsonPropertyName("AssignedUsers")]
+    public User[] AssignedUsersArray
+    {
+        get => AssignedUsers.ToArray();
+    }
+>>>>>>> 52eab0bf39151dc6da3f1866105e9547f6ec82b1
 
     [JsonIgnore]
     public Efteldingen<TaskItem> Dependencies { get; set; } = [];

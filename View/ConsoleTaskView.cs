@@ -35,8 +35,9 @@ public class ConsoleTaskView : ITaskView
                 $"{task.Name,-30} " +
                 $"{task.Description,-55} " +
                 $"{task.Status.GetDescription(),-15} " +
-                $"{task.Priority,-10} " +
-                $"{string.Join(", ", task.AssignedUsers.Select(u => u.Username)),-20}"
+                $"{task.Priority,-20} " +
+                $"{task.AssignedUsers.Reduce("", (acc, user) => acc + user.Username + ", "),-30} " +
+                $"{task.Dependencies.Reduce("", (acc, task) => acc + task.Name + ", "),-30}"
             );
         }
     }
@@ -346,12 +347,12 @@ public class ConsoleTaskView : ITaskView
                             break;
                     }
 
-                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10} {"Assigned Users",-15}");
-                    Console.WriteLine(new string('-', 136) + "+");
+                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-20} {"Assigned Users",-30} {"Dependencies",-30}");
+                    Console.WriteLine(new string('-', 186) + "+");
 
                     DisplayTasks(10, offset);
 
-                    Console.WriteLine(new string('-', 136) + "+");
+                    Console.WriteLine(new string('-', 186) + "+");
 
                     Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
 
