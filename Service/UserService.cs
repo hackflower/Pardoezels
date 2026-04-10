@@ -8,7 +8,6 @@ public class UserService : IUserService
     public UserService(IUserRepository repository)
     {
         _repository = repository;
-
         _users = _repository.LoadUsers();
     }
 
@@ -30,9 +29,7 @@ public class UserService : IUserService
     public bool ValidateUser(string email, string password)
     {
         var user = GetUserByEmail(email);
-
-        if (user == null)
-            return false;
+        if (user == null) return false;
 
         return user.Password == password;
     }
@@ -51,14 +48,11 @@ public class UserService : IUserService
 
     public bool UserValid(User user)
     {
-        if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
-            return false;
+        if (string.IsNullOrWhiteSpace(user.Username) ||
+        string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password)) return false;
 
-        if (!EmailValid(user.Email))
-            return false;
-
-        if (UserExists(user.Email))
-            return false;
+        else if (!EmailValid(user.Email)) return false;
+        else if (UserExists(user.Email)) return false;
 
         return true;
     }

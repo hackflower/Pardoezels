@@ -69,21 +69,14 @@ public class ConsoleTaskView : ITaskView
 
         var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
 
-        if (loggedInUser == null 
-            || !task.HasValue 
-            || task.Value.AssignedUsers
-                .FindBy(loggedInUser, (t, u) => t.Id == u.Id ? 0 : -1)
-                .HasValue)
+        if (loggedInUser == null || !task.Value.AssignedUsers.FindBy(loggedInUser, (t, u) => t.Id.CompareTo(u.Id)).HasValue)
         {
             Console.WriteLine("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
             Console.ReadKey();
             return "MainMenu";
         }
 
-        if (!task.HasValue)
-        {
-            return "MainMenu";
-        }
+        if (!task.HasValue) return "MainMenu";
 
         while (true)
         {
@@ -363,23 +356,12 @@ public class ConsoleTaskView : ITaskView
                     Console.WriteLine("\nClick ENTER to continue...");
                     ConsoleKey key = Console.ReadKey(true).Key;
 
-                    if (key == ConsoleKey.RightArrow && tasks.Count > offset + 10)
-                        offset += 10;
-
-                    else if (key == ConsoleKey.LeftArrow && offset >= 10)
-                        offset -= 10;
-
-                    else if (key == ConsoleKey.UpArrow && filter < TaskFilter.Status)
-                        filter += 1;
-
-                    else if (key == ConsoleKey.DownArrow && filter > TaskFilter.Id)
-                        filter -= 1;
-
-                    else if (key == ConsoleKey.Tab)
-                        orderAsc = !orderAsc;
-
-                    else if (key == ConsoleKey.Enter)
-                        break;
+                    if (key == ConsoleKey.RightArrow && tasks.Count > offset + 10) offset += 10;
+                    else if (key == ConsoleKey.LeftArrow && offset >= 10) offset -= 10;
+                    else if (key == ConsoleKey.UpArrow && filter < TaskFilter.Status) filter += 1;
+                    else if (key == ConsoleKey.DownArrow && filter > TaskFilter.Id) filter -= 1;
+                    else if (key == ConsoleKey.Tab) orderAsc = !orderAsc;
+                    else if (key == ConsoleKey.Enter) break;
                 }
                 Console.CursorVisible = true;
                 return "MainMenu";
