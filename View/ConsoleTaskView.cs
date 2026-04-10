@@ -156,13 +156,6 @@ public class ConsoleTaskView : ITaskView
                         break;
                     }
 
-                    if (task.Value.AssignedUsersIds.Any(u => u == loggedInUser.Id))
-                    {
-                        Console.WriteLine("\nYou are already assigned to this task. Press any key to continue...");
-                        Console.ReadKey();
-                        break;
-                    }
-
                     if (task.Value.AssignedUsersIds.Count >= 3)
                     {
                         Console.WriteLine("\nThis task has reached the maximum number of assigned users. Press any key to continue...");
