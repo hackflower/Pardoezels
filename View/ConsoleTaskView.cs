@@ -68,7 +68,11 @@ public class ConsoleTaskView : ITaskView
 
         var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
 
-        if (loggedInUser == null || !task.HasValue || !task.Value.AssignedUsers.Any(u => u.Id == loggedInUser.Id))
+        if (loggedInUser == null 
+            || !task.HasValue 
+            || task.Value.AssignedUsers
+                .FindBy(loggedInUser, (t, u) => t.Id == u.Id ? 0 : -1)
+                .HasValue)
         {
             Console.WriteLine("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
             Console.ReadKey();
@@ -155,6 +159,13 @@ public class ConsoleTaskView : ITaskView
                     if (_userService.GetAllUsers().Count == 0)
                     {
                         Console.WriteLine("\nNo users available to assign. Press any key to continue...");
+                        Console.ReadKey();
+                        break;
+                    }
+
+                    if (task.Value.AssignedUsers.Any(u => u.Id == loggedInUser.Id))
+                    {
+                        Console.WriteLine("\nYou are already assigned to this task. Press any key to continue...");
                         Console.ReadKey();
                         break;
                     }
