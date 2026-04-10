@@ -83,6 +83,16 @@ public class TaskService : ITaskService
         }
     }
 
+    public void AddDependency(int id, TaskItem taskToAdd)
+    {
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
+        if (task.HasValue)
+        {
+            task.Value.DependenciesIds.Add(taskToAdd.Id);
+            _repository.SaveTasks(_tasks);
+        }
+    }
+
     public TaskItem GetTaskById(int id)
     {
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));

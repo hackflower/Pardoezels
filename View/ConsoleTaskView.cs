@@ -128,8 +128,7 @@ public class ConsoleTaskView : ITaskView
                         Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
                     }
 
-                    var taskToAdd = _service.GetAllTasks().FindBy(id, (t, n) => t.Id.CompareTo(id));
-                    if (taskToAdd.HasValue) task.Value.DependenciesIds.Add(taskToAdd.Value.Id);
+                    _service.AddDependency(id, task.Value);
                     break;
 
                 case 5:
