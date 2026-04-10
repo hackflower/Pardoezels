@@ -86,10 +86,7 @@ public class TaskService : ITaskService
     public TaskItem GetTaskById(int id)
     {
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
-        if (task.HasValue)
-        {
-            return task.Value;
-        }
+        if (task.HasValue) return task.Value;
 
         throw new ArgumentException("Task not found");
     }

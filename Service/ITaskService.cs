@@ -8,4 +8,5 @@ public interface ITaskService
     void ChangeTaskName(int id, string name);
     void ChangeTaskPriority(int id, TaskItem.Importance priority);
     void AddAssignedUser(int id, User user);
+    TaskItem GetTaskById(int id);
 }

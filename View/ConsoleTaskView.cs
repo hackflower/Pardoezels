@@ -68,7 +68,7 @@ public class ConsoleTaskView : ITaskView
 
         var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
 
-        if (loggedInUser == null || !task.Value.AssignedUsers.FindBy(loggedInUser, (t, u) => t.Id.CompareTo(u.Id)).HasValue)
+        if (loggedInUser == null || !task.Value.AssignedUsersIds.FindBy(loggedInUser, (t, u) => t.CompareTo(u.Id)).HasValue)
         {
             Console.WriteLine("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
             Console.ReadKey();
@@ -95,7 +95,7 @@ public class ConsoleTaskView : ITaskView
 
                     bool allDone = true;
                     for (int i = 0; i < task.Value.DependenciesIds.Count; i++)
-                        if (task.Value.DependenciesIds[i].Status != TaskItem.Progress.Completed) allDone = false;
+                        if (_service.GetTaskById(task.Value.DependenciesIds[i]).Status != TaskItem.Progress.Completed) allDone = false;
 
                     if (!allDone) continue;
 
@@ -130,7 +130,7 @@ public class ConsoleTaskView : ITaskView
                     }
 
                     var taskToAdd = _service.GetAllTasks().FindBy(id, (t, n) => t.Id.CompareTo(id));
-                    if (taskToAdd.HasValue) task.Value.DependenciesIds.Add(taskToAdd.Value);
+                    if (taskToAdd.HasValue) task.Value.DependenciesIds.Add(taskToAdd.Value.Id);
                     break;
 
                 case 5:
@@ -145,7 +145,7 @@ public class ConsoleTaskView : ITaskView
                     }
 
                     var taskToRemove = _service.GetAllTasks().FindBy(idOfTask, (t, n) => t.Id.CompareTo(idOfTask));
-                    if (taskToRemove.HasValue) task.Value.DependenciesIds.Remove(taskToRemove.Value);
+                    if (taskToRemove.HasValue) task.Value.DependenciesIds.Remove(taskToRemove.Value.Id);
                     break;
 
                 case 6:
@@ -156,7 +156,7 @@ public class ConsoleTaskView : ITaskView
                         break;
                     }
 
-                    if (task.Value.AssignedUsersIds.Any(u => u.Id == loggedInUser.Id))
+                    if (task.Value.AssignedUsersIds.Any(u => u == loggedInUser.Id))
                     {
                         Console.WriteLine("\nYou are already assigned to this task. Press any key to continue...");
                         Console.ReadKey();
@@ -380,7 +380,7 @@ public class ConsoleTaskView : ITaskView
                 User assignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[SelectOption("==== Assign User to Task ====", userAssignmentOptions)], (u, username) => u.Username == username ? 0 : -1).Value;
                 TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
 
-                _service.AddTask(name, description, priority, new Efteldingen<User> { assignedUser });
+                _service.AddTask(name, description, priority, assignedUser.Id);
 
                 return "MainMenu";
 
