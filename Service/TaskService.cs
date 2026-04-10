@@ -83,12 +83,14 @@ public class TaskService : ITaskService
         }
     }
 
-    public void GetTaskById(int id)
+    public TaskItem GetTaskById(int id)
     {
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
-            Console.WriteLine(task.Value);
+            return task.Value;
         }
+
+        throw new ArgumentException("Task not found");
     }
 }
