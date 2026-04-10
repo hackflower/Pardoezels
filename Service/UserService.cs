@@ -22,14 +22,12 @@ public class UserService : IUserService
     public User? GetUserByEmail(string email)
     {
         var result = _users.FindBy(email, (user, key) => user.Email == key ? 0 : -1);
-
         return result.HasValue ? result.Value : null;
     }
     
     public User? GetUserById(int id)
     {
         var result = _users.FindBy(id, (user, key) => user.Id == key ? 0 : -1);
-
         return result.HasValue ? result.Value : null;
     }
 
@@ -37,7 +35,6 @@ public class UserService : IUserService
     {
         var user = GetUserByEmail(email);
         if (user == null) return false;
-
         return user.Password == password;
     }
 
