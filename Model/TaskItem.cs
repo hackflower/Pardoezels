@@ -11,12 +11,6 @@ public class TaskItem
     [JsonIgnore]
     public required Efteldingen<User> AssignedUsers { get; set; } = [];
 
-    [JsonPropertyName("AssignedUsers")]
-    public User[] AssignedUsersArray
-    {
-        get => AssignedUsers.ToArray();
-    }
-
     [JsonIgnore]
     public Efteldingen<TaskItem> Dependencies { get; set; } = [];
 
