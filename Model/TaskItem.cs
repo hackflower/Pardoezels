@@ -9,21 +9,21 @@ public class TaskItem
     public required string Description { get; set; }
 
     [JsonIgnore]
-    public required Efteldingen<User> AssignedUsers { get; set; } = [];
+    public required Efteldingen<int> AssignedUsersIds { get; set; } = [];
 
     [JsonIgnore]
-    public Efteldingen<TaskItem> Dependencies { get; set; } = [];
+    public Efteldingen<int> DependenciesIds { get; set; } = [];
 
     [JsonPropertyName("Dependencies")]
-    public TaskItem[] DependenciesArray
+    public int[] DependenciesArray
     {
-        get => Dependencies.ToArray();
+        get => DependenciesIds.ToArray();
     }
 
     [JsonPropertyName("AssignedUsers")]
-    public User[] AssignedUsersArray
+    public int[] AssignedUsersArray
     {
-        get => AssignedUsers.ToArray();
+        get => AssignedUsersIds.ToArray();
     }
 
     public enum Progress

@@ -18,7 +18,7 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.Now,
             Status = TaskItem.Progress.NotStarted,
             Priority = priority,
-            AssignedUsers = users
+            AssignedUsersIds = users
         };
 
         _tasks.Add(newTask);
@@ -78,8 +78,17 @@ public class TaskService : ITaskService
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
         if (task.HasValue)
         {
-            task.Value.AssignedUsers.Add(user);
+            task.Value.AssignedUsersIds.Add(user.Id);
             _repository.SaveTasks(_tasks);
+        }
+    }
+
+    public void GetTaskById(int id)
+    {
+        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
+        if (task.HasValue)
+        {
+            Console.WriteLine(task.Value);
         }
     }
 }
