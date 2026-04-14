@@ -43,6 +43,7 @@ public class ConsoleTaskView : ITaskView
 
     public void PressToContinue(string message)
     {
+        Console.Clear();
         Console.WriteLine(message);
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine("\nPress enter to continue...");
@@ -80,8 +81,7 @@ public class ConsoleTaskView : ITaskView
 
         if (loggedInUser == null || !task.Value.AssignedUsersIds.FindBy(loggedInUser, (t, u) => t.CompareTo(u.Id)).HasValue)
         {
-            Console.WriteLine("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
-            Console.ReadKey();
+            PressToContinue("\nYou can only edit tasks assigned to you. Press any key to return to the main menu...");
             return "MainMenu";
         }
 
@@ -158,15 +158,13 @@ public class ConsoleTaskView : ITaskView
                 case 6:
                     if (_userService.GetAllUsers().Count == 0)
                     {
-                        Console.WriteLine("\nNo users available to assign. Press any key to continue...");
-                        Console.ReadKey();
+                        PressToContinue("\nNo users available to assign. Press any key to continue...");
                         break;
                     }
 
                     if (task.Value.AssignedUsersIds.Count >= 3)
                     {
-                        Console.WriteLine("\nThis task has reached the maximum number of assigned users. Press any key to continue...");
-                        Console.ReadKey();
+                        PressToContinue("\nThis task has reached the maximum number of assigned users. Press any key to continue...");
                         break;
                     }
 
@@ -179,8 +177,7 @@ public class ConsoleTaskView : ITaskView
 
                     if (task.Value.AssignedUsersIds.FindBy(newAssignedUser.Id, (u, id) => u.CompareTo(id)).HasValue)
                     {
-                        Console.WriteLine("\nThis user is already assigned to the task. Press any key to continue...");
-                        Console.ReadKey();
+                        PressToContinue("\nThis user is already assigned to the task. Press any key to continue...");
                         break;
                     }
 
@@ -431,9 +428,7 @@ public class ConsoleTaskView : ITaskView
             return "MainMenu";
         }
 
-        Console.WriteLine("\nInvalid email or password.");
-        Console.ReadKey();
-
+        PressToContinue("\nInvalid email or password.");
         return "Login";
     }
 
@@ -450,8 +445,7 @@ public class ConsoleTaskView : ITaskView
 
         if (!_userService.UserValid(user))
         {
-            Console.WriteLine("\nInvalid user details. Make sure your email is valid and not already in use.");
-            Console.ReadKey();
+            PressToContinue("\nInvalid user details. Make sure your email is valid and not already in use.");
             return "Register";
         }
 
