@@ -41,6 +41,15 @@ public class ConsoleTaskView : ITaskView
         }
     }
 
+    public void PressToContinue(string message)
+    {
+        Console.WriteLine(message);
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("\nPress enter to continue...");
+        Console.ReadKey();
+        Console.ResetColor();
+    }
+
     public string EditTask()
     {
         string[] options =
