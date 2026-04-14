@@ -32,10 +32,10 @@ public class ConsoleTaskView : ITaskView
             Console.WriteLine(
                 $"{task.Id,-4} " +
                 $"{task.Name,-30} " +
-                $"{task.Description,-55} " +
+                $"{task.Description,-65} " +
                 $"{task.Status.GetDescription(),-15} " +
                 $"{task.Priority,-10} " +
-                $"{string.Join(", ", task.AssignedUsersIds.Select(u => _userService.GetUserById(u)?.Username ?? "Unknown")),-20}" +
+                $"{string.Join(", ", task.AssignedUsersIds.Select(u => _userService.GetUserById(u)?.Username ?? "Unknown")),-30}" +
                 $"{string.Join(", ", task.DependenciesIds.Select(t => _service.GetTaskById(t)?.Name ?? "Unknown")),-20}"
             );
         }
@@ -105,7 +105,11 @@ public class ConsoleTaskView : ITaskView
                     for (int i = 0; i < task.Value.DependenciesIds.Count; i++)
                         if (_service.GetTaskById(task.Value.DependenciesIds[i]).Status != TaskItem.Progress.Completed) allDone = false;
 
-                    if (!allDone) continue;
+                    if (!allDone)
+                    {
+                        PressToContinue("Dependent tasks must be completed first.");
+                        continue;
+                    }
 
                     int statusChoice = SelectOption("==== Change Task Status ====", statusOptions);
 
@@ -343,12 +347,12 @@ public class ConsoleTaskView : ITaskView
                             break;
                     }
 
-                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-55} {"Status",-15} {"Priority",-10} {"Assigned Users",-20} {"Dependencies",-20}");
-                    Console.WriteLine(new string('-', 156) + "+");
+                    Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-65} {"Status",-15} {"Priority",-10} {"Assigned Users",-29} {"Dependencies",-20}");
+                    Console.WriteLine(new string('-', 186) + "+");
 
                     DisplayTasks(10, offset);
 
-                    Console.WriteLine(new string('-', 156) + "+");
+                    Console.WriteLine(new string('-', 186) + "+");
 
                     Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
 

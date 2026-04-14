@@ -83,12 +83,12 @@ public class TaskService : ITaskService
         }
     }
 
-    public void AddDependency(int id, TaskItem taskToAdd)
+    public void AddDependency(int id, TaskItem task)
     {
-        var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
-        if (task.HasValue)
+        var taskToAdd = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
+        if (taskToAdd.HasValue)
         {
-            task.Value.DependenciesIds.Add(taskToAdd.Id);
+            task.DependenciesIds.Add(taskToAdd.Value.Id);
             _repository.SaveTasks(_tasks);
         }
     }
