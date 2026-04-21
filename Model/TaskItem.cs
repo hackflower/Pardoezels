@@ -9,10 +9,10 @@ public class TaskItem
     public required string Description { get; set; }
 
     [JsonIgnore]
-    public Efteldingen<int> AssignedUsersIds { get; set; } = [];
+    public IMyCollection<int> AssignedUsersIds { get; set; }
 
     [JsonIgnore]
-    public Efteldingen<int> DependenciesIds { get; set; } = [];
+    public IMyCollection<int> DependenciesIds { get; set; }
 
     [JsonPropertyName("Dependencies")]
     public int[] DependenciesArray
@@ -53,6 +53,12 @@ public class TaskItem
     }
 
     public Importance Priority { get; set; }
+
+    public TaskItem(IMyCollection<int> assignedUsersIds, IMyCollection<int> dependenciesIds)
+    {
+        AssignedUsersIds = assignedUsersIds;
+        DependenciesIds = dependenciesIds;
+    }
 
     public override string ToString()
     {

@@ -103,7 +103,7 @@ public class ConsoleTaskView : ITaskView
 
                     bool allDone = true;
                     for (int i = 0; i < task.Value.DependenciesIds.Count; i++)
-                        if (_taskservice.GetTaskById(task.Value.DependenciesIds[i]).Status != TaskItem.Progress.Completed) allDone = false;
+                        if (_taskservice.GetTaskById(task.Value.DependenciesIds.ToArray()[i]).Status != TaskItem.Progress.Completed) allDone = false;
 
                     if (!allDone)
                     {

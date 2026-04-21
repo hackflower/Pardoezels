@@ -10,7 +10,7 @@ public class TaskService : ITaskService
     public IMyCollection<TaskItem> GetAllTasks() => _tasks;
     public void AddTask(string name, string description, TaskItem.Importance priority, int userId)
     {
-        var newTask = new TaskItem
+        var newTask = new TaskItem(new Efteldingen<int> { userId }, new Efteldingen<int>()) // CHANGE THIS FOR DIFFERENT LIST IMPLEMENTATION
         {
             Id = _tasks.Count > 0 ? _tasks.Max((a, b) => a.Id.CompareTo(b.Id)).Id + 1 : 1,
             Name = name,
@@ -18,7 +18,6 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.Now,
             Status = TaskItem.Progress.NotStarted,
             Priority = priority,
-            AssignedUsersIds = [userId],
         };
 
         _tasks.Add(newTask);

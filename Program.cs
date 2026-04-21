@@ -4,8 +4,8 @@
     {
         string filePath = "tasks.json";
 
-        IMyCollection<TaskItem> tasks = new Eftelinked<TaskItem>();
-        IMyCollection<User> users = new Eftelinked<User>();
+        IMyCollection<TaskItem> tasks = new Efteldingen<TaskItem>();
+        IMyCollection<User> users = new Efteldingen<User>();
 
         ITaskRepository repository = new JsonTaskRepository(filePath, tasks);
         IUserRepository userRepository = new JsonUserRepository("users.json", users);
