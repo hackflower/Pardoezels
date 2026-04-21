@@ -211,6 +211,8 @@ public class Eftelinked<T> : IMyCollection<T>
             {
                 max = current.Data;
             }
+
+            current = current.Next;
         }
 
         return max;

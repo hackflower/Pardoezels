@@ -445,7 +445,11 @@ public class ConsoleTaskView : ITaskView
         string email = GetInput("Enter your email: ");
         string password = InputPassword("Enter your password: ");
 
+        Console.WriteLine("meow 1");
+
         var user = new User(username, email, password);
+
+        Console.WriteLine("meow 2");
 
         if (!_userService.UserValid(user))
         {
@@ -453,8 +457,15 @@ public class ConsoleTaskView : ITaskView
             return "Register";
         }
 
+        Console.WriteLine("meow 3");
+
         _userService.AddUser(user);
+
+         Console.WriteLine("meow 4");
+
         loggedInUser = _userService.GetUserByEmail(email);
+
+        Console.WriteLine("meow 5");
 
         return "MainMenu";
     }
