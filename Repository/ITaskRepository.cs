@@ -1,5 +1,5 @@
 public interface ITaskRepository
 {
-    Efteldingen<TaskItem> LoadTasks();
-    void SaveTasks(Efteldingen<TaskItem> tasks);
+    IMyCollection<TaskItem> LoadTasks();
+    void SaveTasks(IMyCollection<TaskItem> tasks);
 }

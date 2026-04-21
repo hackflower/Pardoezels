@@ -1,6 +1,6 @@
 public interface ITaskService
 {
-    Efteldingen<TaskItem> GetAllTasks();
+    IMyCollection<TaskItem> GetAllTasks();
     void AddTask(string name, string descriptions, TaskItem.Importance priority, int user);
     void RemoveTask(int id);
     void ChangeTaskStatus(int id, TaskItem.Progress status);

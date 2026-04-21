@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
-    private Eftelinked<User> _users;
+    private IMyCollection<User> _users;
 
     public UserService(IUserRepository repository)
     {
@@ -61,7 +61,7 @@ public class UserService : IUserService
         return true;
     }
 
-    public Eftelinked<User> GetAllUsers()
+    public IMyCollection<User> GetAllUsers()
     {
         return _users;
     }

@@ -7,5 +7,5 @@ public interface IUserService
     bool UserExists(string email);
     bool EmailValid(string email);
     bool UserValid(User user);
-    Eftelinked<User> GetAllUsers();
+    IMyCollection<User> GetAllUsers();
 }
