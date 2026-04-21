@@ -150,7 +150,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         return default;
     }
 
-    public Efteldingen<R> Select<R>(Func<T, R> selector)
+    public IMyCollection<R> Select<R>(Func<T, R> selector)
     {
         var newList = new Efteldingen<R>();
 

@@ -1,5 +1,5 @@
 public interface IUserRepository
 {
-    Eftelinked<User> LoadUsers();
-    void SaveUsers(Eftelinked<User> users);
+    IMyCollection<User> LoadUsers();
+    void SaveUsers(IMyCollection<User> users);
 }

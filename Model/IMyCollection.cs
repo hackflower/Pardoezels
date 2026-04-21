@@ -7,8 +7,10 @@ public interface IMyCollection<T>
     void Sort(Comparison<T> comparison);
     int Count { get; }
     bool Dirty { get; set; }
+    T Max(Comparison<T> comparison);
     R Reduce<R>(R initial, Func<R, T, R> accumulator);
     IEnumerator<T> GetEnumerator();
+    R Select<R>(Func<T, R> selector);
     T[] ToArray();
     IMyCollection<T> FromArray(T[] array);
 }

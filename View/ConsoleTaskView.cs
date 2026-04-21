@@ -21,13 +21,13 @@ public class ConsoleTaskView : ITaskView
 
     public void DisplayTasks(int amount, int offset = 0)
     {
-        Efteldingen<TaskItem> allTasks = _service.GetAllTasks();
+        IMyCollection<TaskItem> allTasks = _service.GetAllTasks();
 
         for (int i = offset; i < amount + offset; i++)
         {
             if (i >= allTasks.Count) break;
 
-            TaskItem task = allTasks[i];
+            TaskItem task = allTasks.ToArray()[i];
 
             Console.WriteLine(
                 $"{task.Id,-4} " +
@@ -306,7 +306,7 @@ public class ConsoleTaskView : ITaskView
         switch (choice)
         {
             case 0:
-                Efteldingen<TaskItem> tasks = _service.GetAllTasks();
+                IMyCollection<TaskItem> tasks = _service.GetAllTasks();
                 Console.CursorVisible = false;
 
                 int offset = 0;

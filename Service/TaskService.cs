@@ -1,13 +1,13 @@
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _repository;
-    private readonly Efteldingen<TaskItem> _tasks;
+    private readonly IMyCollection<TaskItem> _tasks;
     public TaskService(ITaskRepository repository)
     {
         _repository = repository;
         _tasks = _repository.LoadTasks();
     }
-    public Efteldingen<TaskItem> GetAllTasks() => _tasks;
+    public IMyCollection<TaskItem> GetAllTasks() => _tasks;
     public void AddTask(string name, string description, TaskItem.Importance priority, int userId)
     {
         var newTask = new TaskItem
