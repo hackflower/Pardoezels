@@ -10,7 +10,7 @@ public interface IMyCollection<T>
     T Max(Comparison<T> comparison);
     R Reduce<R>(R initial, Func<R, T, R> accumulator);
     IEnumerator<T> GetEnumerator();
-    R Select<R>(Func<T, R> selector);
+    IMyCollection<R> Select<R>(Func<T, R> selector);
     T[] ToArray();
     IMyCollection<T> FromArray(T[] array);
 }
