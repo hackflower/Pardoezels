@@ -126,7 +126,7 @@ public class Eftelinked<T> : IMyCollection<T>
 
     public void Remove(T item)
     {
-        if (head == null) return;
+        if (head == null || head.Data == null) return;
 
         if (head.Data.Equals(item))
         {
@@ -137,7 +137,7 @@ public class Eftelinked<T> : IMyCollection<T>
 
         var current = head;
         
-        while (!current.Next.Equals(null))
+        while (!current.Next!.Equals(null))
         {
             if (current.Next.Equals(item))
             {
