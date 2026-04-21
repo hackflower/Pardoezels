@@ -1,7 +1,7 @@
 public class ConsoleTaskView : ITaskView
 {
     public User? loggedInUser { get; set; }
-    private readonly ITaskService _service;
+    private readonly ITaskService _taskservice;
     private readonly IUserService _userService;
 
     public enum TaskFilter
@@ -15,13 +15,13 @@ public class ConsoleTaskView : ITaskView
 
     public ConsoleTaskView(ITaskService taskService, IUserService userService)
     {
-        _service = taskService;
+        _taskservice = taskService;
         _userService = userService;
     }
 
     public void DisplayTasks(int amount, int offset = 0)
     {
-        IMyCollection<TaskItem> allTasks = _service.GetAllTasks();
+        IMyCollection<TaskItem> allTasks = _taskservice.GetAllTasks();
 
         for (int i = offset; i < amount + offset; i++)
         {
@@ -36,7 +36,7 @@ public class ConsoleTaskView : ITaskView
                 $"{task.Status.GetDescription(),-15} " +
                 $"{task.Priority,-10} " +
                 $"{string.Join(", ", task.AssignedUsersIds.Select(u => _userService.GetUserById(u)?.Username ?? "Unknown")),-30}" +
-                $"{string.Join(", ", task.DependenciesIds.Select(t => _service.GetTaskById(t)?.Name ?? "Unknown")),-20}"
+                $"{string.Join(", ", task.DependenciesIds.Select(t => _taskservice.GetTaskById(t)?.Name ?? "Unknown")),-20}"
             );
         }
     }
@@ -76,7 +76,7 @@ public class ConsoleTaskView : ITaskView
             Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
         }
 
-        var task = _service.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
+        var task = _taskservice.GetAllTasks().FindBy(number, (t, n) => t.Id.CompareTo(number));
         if (!task.HasValue) return "MainMenu";
 
         if (loggedInUser == null || !task.Value.AssignedUsersIds.FindBy(loggedInUser, (t, u) => t.CompareTo(u.Id)).HasValue)
@@ -91,11 +91,11 @@ public class ConsoleTaskView : ITaskView
             switch (choice)
             {
                 case 0:
-                    _service.ChangeTaskName(task.Value.Id, GetInput("Enter new task name: "));
+                    _taskservice.ChangeTaskName(task.Value.Id, GetInput("Enter new task name: "));
                     continue;
                     
                 case 1:
-                    _service.ChangeTaskDescription(task.Value.Id, GetInput("Enter new task description: "));
+                    _taskservice.ChangeTaskDescription(task.Value.Id, GetInput("Enter new task description: "));
                     continue;
 
                 case 2:
@@ -103,7 +103,7 @@ public class ConsoleTaskView : ITaskView
 
                     bool allDone = true;
                     for (int i = 0; i < task.Value.DependenciesIds.Count; i++)
-                        if (_service.GetTaskById(task.Value.DependenciesIds[i]).Status != TaskItem.Progress.Completed) allDone = false;
+                        if (_taskservice.GetTaskById(task.Value.DependenciesIds[i]).Status != TaskItem.Progress.Completed) allDone = false;
 
                     if (!allDone)
                     {
@@ -115,7 +115,7 @@ public class ConsoleTaskView : ITaskView
 
                     TaskItem.Progress newStatus = (TaskItem.Progress)statusChoice;
 
-                    _service.ChangeTaskStatus(task.Value.Id, newStatus);
+                    _taskservice.ChangeTaskStatus(task.Value.Id, newStatus);
 
                     continue;
 
@@ -126,7 +126,7 @@ public class ConsoleTaskView : ITaskView
 
                     TaskItem.Importance newPriority = (TaskItem.Importance)priorityChoice;
 
-                    _service.ChangeTaskPriority(task.Value.Id, newPriority);
+                    _taskservice.ChangeTaskPriority(task.Value.Id, newPriority);
 
                     break;
 
@@ -141,7 +141,7 @@ public class ConsoleTaskView : ITaskView
                         Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
                     }
 
-                    _service.AddDependency(id, task.Value);
+                    _taskservice.AddDependency(id, task.Value);
                     break;
 
                 case 5:
@@ -155,7 +155,7 @@ public class ConsoleTaskView : ITaskView
                         Console.Write("==== Task Edit Menu ====\n\nEnter a valid number: ");
                     }
 
-                    var taskToRemove = _service.GetAllTasks().FindBy(idOfTask, (t, n) => t.Id.CompareTo(idOfTask));
+                    var taskToRemove = _taskservice.GetAllTasks().FindBy(idOfTask, (t, n) => t.Id.CompareTo(idOfTask));
                     if (taskToRemove.HasValue) task.Value.DependenciesIds.Remove(taskToRemove.Value.Id);
                     break;
 
@@ -185,12 +185,12 @@ public class ConsoleTaskView : ITaskView
                         break;
                     }
 
-                    _service.AddAssignedUser(task.Value.Id, newAssignedUser);
+                    _taskservice.AddAssignedUser(task.Value.Id, newAssignedUser);
 
                     break;
 
                 case 7:
-                    _service.RemoveTask(task.Value.Id);
+                    _taskservice.RemoveTask(task.Value.Id);
                     break;
 
                 case 8:
@@ -306,7 +306,7 @@ public class ConsoleTaskView : ITaskView
         switch (choice)
         {
             case 0:
-                IMyCollection<TaskItem> tasks = _service.GetAllTasks();
+                IMyCollection<TaskItem> tasks = _taskservice.GetAllTasks();
                 Console.CursorVisible = false;
 
                 int offset = 0;
@@ -388,7 +388,7 @@ public class ConsoleTaskView : ITaskView
                 User assignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[SelectOption("==== Assign User to Task ====", userAssignmentOptions)], (u, username) => u.Username == username ? 0 : -1).Value;
                 TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
 
-                _service.AddTask(name, description, priority, assignedUser.Id);
+                _taskservice.AddTask(name, description, priority, assignedUser.Id);
 
                 return "MainMenu";
 

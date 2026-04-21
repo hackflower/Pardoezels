@@ -24,6 +24,7 @@ public class TaskService : ITaskService
         _tasks.Add(newTask);
         _repository.SaveTasks(_tasks);
     }
+
     public void RemoveTask(int id)
     {
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
@@ -33,6 +34,7 @@ public class TaskService : ITaskService
             _repository.SaveTasks(_tasks);
         }
     }
+
     public void ChangeTaskStatus(int id, TaskItem.Progress status)
     {
         var task = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
@@ -89,6 +91,16 @@ public class TaskService : ITaskService
         if (taskToAdd.HasValue)
         {
             task.DependenciesIds.Add(taskToAdd.Value.Id);
+            _repository.SaveTasks(_tasks);
+        }
+    }
+
+    public void RemoveDependency(int id, TaskItem task)
+    {
+        var taskToRemove = _tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
+        if (taskToRemove.HasValue)
+        {
+            task.DependenciesIds.Remove(taskToRemove.Value.Id);
             _repository.SaveTasks(_tasks);
         }
     }
