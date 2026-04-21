@@ -9,7 +9,7 @@
         IMyCollection<TaskItem> tasks;
         IMyCollection<User> users;
 
-        if (choice == 1)
+        if (choice == 0)
         {
             tasks = new Efteldingen<TaskItem>();
             users = new Efteldingen<User>();
@@ -22,8 +22,8 @@
 
         ITaskRepository taskRepository = new JsonTaskRepository(filePath, tasks);
         IUserRepository userRepository = new JsonUserRepository("users.json", users);
-        ITaskService taskService = new TaskService(taskRepository);
-        IUserService userService = new UserService(userRepository);
+        TaskService taskService = new TaskService(taskRepository);
+        UserService userService = new UserService(userRepository);
         ITaskView view = new ConsoleTaskView(taskService, userService);
         
         view.Run();
