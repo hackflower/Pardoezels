@@ -243,7 +243,7 @@ public class ConsoleTaskView : ITaskView
         return password;
     }
 
-    public int SelectOption(string title, string[] options)
+    public static int SelectOption(string title, string[] options)
     {
         int selectedIndex = 0;
         Console.CursorVisible = false;
