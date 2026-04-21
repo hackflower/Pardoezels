@@ -1,8 +1,8 @@
 public class ConsoleTaskView : ITaskView
 {
     public User? loggedInUser { get; set; }
-    private readonly ITaskService _taskservice;
-    private readonly IUserService _userService;
+    private readonly TaskService _taskservice;
+    private readonly UserService _userService;
 
     public enum TaskFilter
     {
@@ -13,7 +13,7 @@ public class ConsoleTaskView : ITaskView
         Status
     }
 
-    public ConsoleTaskView(ITaskService taskService, IUserService userService)
+    public ConsoleTaskView(TaskService taskService, UserService userService)
     {
         _taskservice = taskService;
         _userService = userService;
@@ -93,7 +93,7 @@ public class ConsoleTaskView : ITaskView
                 case 0:
                     _taskservice.ChangeTaskName(task.Value.Id, GetInput("Enter new task name: "));
                     continue;
-                    
+
                 case 1:
                     _taskservice.ChangeTaskDescription(task.Value.Id, GetInput("Enter new task description: "));
                     continue;
@@ -194,7 +194,7 @@ public class ConsoleTaskView : ITaskView
                     break;
 
                 case 8:
-                    break;;
+                    break; ;
             }
 
             break;
@@ -306,7 +306,6 @@ public class ConsoleTaskView : ITaskView
         switch (choice)
         {
             case 0:
-                IMyCollection<TaskItem> tasks = _taskservice.GetAllTasks();
                 Console.CursorVisible = false;
 
                 int offset = 0;
@@ -322,28 +321,28 @@ public class ConsoleTaskView : ITaskView
                     switch (filter)
                     {
                         case TaskFilter.Id:
-                            if (orderAsc) tasks.Sort((b, a) => a.Id.CompareTo(b.Id));
-                            else tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
+                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Id.CompareTo(b.Id));
+                            else _taskservice.tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
                             break;
 
                         case TaskFilter.Name:
-                            if (orderAsc) tasks.Sort((b, a) => a.Name.CompareTo(b.Name));
-                            else tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
+                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Name.CompareTo(b.Name));
+                            else _taskservice.tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
                             break;
 
                         case TaskFilter.Description:
-                            if (orderAsc) tasks.Sort((b, a) => a.Description.CompareTo(b.Description));
-                            else tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
+                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Description.CompareTo(b.Description));
+                            else _taskservice.tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
                             break;
 
                         case TaskFilter.Priority:
-                            if (orderAsc) tasks.Sort((b, a) => a.Priority.CompareTo(b.Priority));
-                            else tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
+                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Priority.CompareTo(b.Priority));
+                            else _taskservice.tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
                             break;
 
                         case TaskFilter.Status:
-                            if (orderAsc) tasks.Sort((b, a) => a.Status.CompareTo(b.Status));
-                            else tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
+                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Status.CompareTo(b.Status));
+                            else _taskservice.tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
                             break;
                     }
 
@@ -354,7 +353,7 @@ public class ConsoleTaskView : ITaskView
 
                     Console.WriteLine(new string('-', 186) + "+");
 
-                    Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (tasks.Count - 1) / 10 + " ►");
+                    Console.WriteLine("Page: ◄ " + offset / 10 + "/" + (_taskservice.tasks.Count - 1) / 10 + " ►");
 
                     Console.WriteLine($"          {new string(' ', filter.ToString().Length / 2)}        ▲");
                     Console.WriteLine($"          Sort on: {filter} {(orderAsc ? "(DESC)" : "(ASC)")}");
@@ -363,7 +362,7 @@ public class ConsoleTaskView : ITaskView
                     Console.WriteLine("\nClick ENTER to continue...");
                     ConsoleKey key = Console.ReadKey(true).Key;
 
-                    if (key == ConsoleKey.RightArrow && tasks.Count > offset + 10) offset += 10;
+                    if (key == ConsoleKey.RightArrow && _taskservice.tasks.Count > offset + 10) offset += 10;
                     else if (key == ConsoleKey.LeftArrow && offset >= 10) offset -= 10;
                     else if (key == ConsoleKey.UpArrow && filter < TaskFilter.Status) filter += 1;
                     else if (key == ConsoleKey.DownArrow && filter > TaskFilter.Id) filter -= 1;
@@ -379,7 +378,7 @@ public class ConsoleTaskView : ITaskView
 
                 string name = GetInput("Enter task name: ");
                 string description = GetInput("Enter task description: ");
-                
+
                 string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
                 string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
 

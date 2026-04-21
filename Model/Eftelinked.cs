@@ -137,7 +137,7 @@ public class Eftelinked<T> : IMyCollection<T>
 
         var current = head;
         
-        while (!current.Next!.Equals(null))
+        while (current.Next != null)
         {
             if (current.Next.Equals(item))
             {
