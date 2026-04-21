@@ -18,14 +18,14 @@ public class TaskItem
     public int[] DependenciesArray
     {
         get => DependenciesIds.ToArray();
-        set => DependenciesIds = (Efteldingen<int>)new Efteldingen<int>().FromArray(value ?? []);
+        set => DependenciesIds = new Efteldingen<int>().FromArray(value ?? []); // here
     }
 
     [JsonPropertyName("AssignedUsers")]
     public int[] AssignedUsersArray
     {
         get => AssignedUsersIds.ToArray();
-        set => AssignedUsersIds = (Efteldingen<int>)new Efteldingen<int>().FromArray(value ?? []);
+        set => AssignedUsersIds = new Efteldingen<int>().FromArray(value ?? []); // here 
     }
 
     public enum Progress

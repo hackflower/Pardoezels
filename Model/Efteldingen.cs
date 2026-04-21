@@ -231,4 +231,9 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         }
         return efteldingen;
     }
+
+    public override string ToString()
+    {
+        return string.Join(", ", this.ToArray());
+    }
 }
