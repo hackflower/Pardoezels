@@ -46,9 +46,9 @@ public class ConsoleTaskView : ITaskView
         Console.Clear();
         Console.WriteLine(message);
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("\nPress enter to continue...");
-        Console.ReadKey();
+        Console.WriteLine("\nPress [ENTER] to continue...");
         Console.ResetColor();
+        Console.ReadKey();
     }
 
     public string EditTask()
