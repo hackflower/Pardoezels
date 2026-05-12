@@ -1,19 +1,18 @@
-
-public class Node<T>
-{
-    public T Data { get; set; }
-    public Node<T>? Next { get; set; }
-
-    public Node(T data)
-    {
-        Data = data;
-        Next = null;
-    }
-}
-
 public class Eftelinked<T> : IMyCollection<T>
 {
-    public Node<T>? head;
+    private class Node
+    {
+        public T Data { get; set; }
+        public Node? Next { get; set; }
+
+        public Node(T data)
+        {
+            Data = data;
+            Next = null;
+        }
+    }
+
+    private Node? head;
     private int _count;
     private bool _dirty;
 
@@ -103,7 +102,7 @@ public class Eftelinked<T> : IMyCollection<T>
 
     public void Add(T item)
     {
-        var newNode = new Node<T>(item);
+        var newNode = new Node(item);
 
         if (head == null)
         {
