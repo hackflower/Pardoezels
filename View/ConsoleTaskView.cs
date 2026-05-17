@@ -87,7 +87,7 @@ public class ConsoleTaskView : ITaskView
 
         while (true)
         {
-            int choice = SelectOption("==== Task Edit Menu ====\n\n" + task.Value, options);
+            int choice = SelectOption("==== Task Edit Menu ====\n\n" + task.Value, options, _userService.ToString());
             switch (choice)
             {
                 case 0:
@@ -111,7 +111,7 @@ public class ConsoleTaskView : ITaskView
                         continue;
                     }
 
-                    int statusChoice = SelectOption("==== Change Task Status ====", statusOptions);
+                    int statusChoice = SelectOption("==== Change Task Status ====", statusOptions, _userService.ToString());
 
                     TaskItem.Progress newStatus = (TaskItem.Progress)statusChoice;
 
@@ -122,7 +122,7 @@ public class ConsoleTaskView : ITaskView
                 case 3:
                     string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
 
-                    int priorityChoice = SelectOption("==== Change Task Priority ====", priorityOptions);
+                    int priorityChoice = SelectOption("==== Change Task Priority ====", priorityOptions, _userService.ToString());
 
                     TaskItem.Importance newPriority = (TaskItem.Importance)priorityChoice;
 
@@ -175,7 +175,7 @@ public class ConsoleTaskView : ITaskView
 
                     string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
 
-                    int userChoice = SelectOption("==== Add Assigned User ====", userAssignmentOptions);
+                    int userChoice = SelectOption("==== Add Assigned User ====", userAssignmentOptions, _userService.ToString());
 
                     User newAssignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[userChoice], (u, username) => u.Username == username ? 0 : -1).Value;
 
@@ -203,6 +203,7 @@ public class ConsoleTaskView : ITaskView
         return "MainMenu";
     }
 
+
     public string GetInput(string title)
     {
         string? input;
@@ -216,6 +217,7 @@ public class ConsoleTaskView : ITaskView
 
         return input;
     }
+
 
     public string InputPassword(string title)
     {
@@ -243,7 +245,8 @@ public class ConsoleTaskView : ITaskView
         return password;
     }
 
-    public static int SelectOption(string title, string[] options)
+
+    public static int SelectOption(string title, string[] options, string collectionType)
     {
         int selectedIndex = 0;
         Console.CursorVisible = false;
@@ -268,6 +271,8 @@ public class ConsoleTaskView : ITaskView
                 }
             }
 
+            Console.WriteLine("\n" + collectionType);
+
             key = Console.ReadKey(true).Key;
 
             if (key == ConsoleKey.UpArrow && selectedIndex != 0)
@@ -284,7 +289,6 @@ public class ConsoleTaskView : ITaskView
 
             else if (key == ConsoleKey.Enter)
                 break;
-
         }
 
         Console.CursorVisible = true;
@@ -301,7 +305,7 @@ public class ConsoleTaskView : ITaskView
             "Exit"
         };
 
-        int choice = SelectOption($"==== Main Menu ====\n\nLogged in as: {loggedInUser!.Username}", options);
+        int choice = SelectOption($"==== Main Menu ====\n\nLogged in as: {loggedInUser!.Username}", options, _userService.ToString());
 
         switch (choice)
         {
@@ -382,9 +386,9 @@ public class ConsoleTaskView : ITaskView
                 string[] priorityOptions = Enum.GetValues<TaskItem.Importance>().Select(o => o.GetDescription()).ToArray();
                 string[] userAssignmentOptions = _userService.GetAllUsers().Select(u => u.Username).ToArray();
 
-                int priorityChoice = SelectOption("==== Set Task Priority ====", priorityOptions);
+                int priorityChoice = SelectOption("==== Set Task Priority ====", priorityOptions, _userService.ToString());
 
-                User assignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[SelectOption("==== Assign User to Task ====", userAssignmentOptions)], (u, username) => u.Username == username ? 0 : -1).Value;
+                User assignedUser = _userService.GetAllUsers().FindBy(userAssignmentOptions[SelectOption("==== Assign User to Task ====", userAssignmentOptions, _userService.ToString())], (u, username) => u.Username == username ? 0 : -1).Value;
                 TaskItem.Importance priority = (TaskItem.Importance)priorityChoice;
 
                 _taskservice.AddTask(name, description, priority, assignedUser.Id);
@@ -403,7 +407,7 @@ public class ConsoleTaskView : ITaskView
 
     public string StartScreen()
     {
-        int choice = SelectOption("==== Login / Register ====", new[] { "Login", "Register" });
+        int choice = SelectOption("==== Login / Register ====", ["Login", "Register"], _userService.ToString());
 
         if (choice == 0)
         {

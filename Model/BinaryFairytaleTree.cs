@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
-    where T : IComparable<T>
+public class BinaryFairytaleTree<T> : IMyCollection<T>
 {
     private class Node
     {
@@ -17,6 +12,8 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
         }
     }
 
+    private IComparer<T> _comparer;
+
     private Node? root;
     private int _count;
     private bool _dirty;
@@ -29,43 +26,33 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
 
     public int Count => _count;
 
-    public void Add(T item)
+    public BinaryFairytaleTree(IComparer<T> comparer)
     {
-        if (root == null)
-        {
+        _comparer = comparer;
+    }
+
+    public void Add(T item)
+    { 
+        if (root == null) {
             root = new Node(item);
             _count++;
             return;
         }
+        
+        Node? current = root;
+        Node parent = current;
 
-        Node current = root;
-        Node parent;
-
-        while (true)
-        {
+        while (current != null) {
             parent = current;
-            int compare = item.CompareTo(current.Data);
-
-            if (compare > 0)
-            {
-                if (current.Right == null)
-                {
-                    current.Right = new Node(item);
-                    break;
-                }
-                current = current.Right;
-            }
-            else
-            {
-                if (current.Left == null)
-                {
-                    current.Left = new Node(item);
-                    break;
-                }
-                current = current.Left;
-            }
+            int compare = _comparer.Compare(item, current.Data);
+            
+            if (compare > 0) current = current.Right;
+            else current = current.Left;
         }
-
+            
+        if (_comparer.Compare(item, parent.Data) > 0) parent.Right = new(item);
+        else parent.Left = new(item);
+        
         _count++;
     }
 
@@ -74,11 +61,11 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
         Node? parent = null;
         Node? current = root;
 
-        while (current != null && !current.Data.Equals(value))
+        while (current != null && current.Data!.Equals(value))
         {
             parent = current;
 
-            if (value.CompareTo(current.Data) < 0)
+            if (_comparer.Compare(value, current.Data) < 0)
                 current = current.Left;
             else
                 current = current.Right;
@@ -117,24 +104,16 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
 
     public Optional<T> FindBy<K>(K key, Func<T, K, int> comparer)
     {
-        Node? current = root;
-
-        while (current != null)
-        {
-            int comparison = comparer(current.Data, key);
-
-            if (comparison == 0)
-                return Optional<T>.Some(current.Data);
-
-            current = comparison > 0 ? current.Left : current.Right;
-        }
+        foreach (var item in this)
+            if (comparer(item, key) == 0)
+                return Optional<T>.Some(item);
 
         return Optional<T>.None();
     }
 
     public IMyCollection<T> Filter(Func<T, bool> predicate)
     {
-        var result = new BinaryFairytaleTree<T>();
+        var result = new BinaryFairytaleTree<T>(_comparer);
 
         foreach (var item in this)
             if (predicate(item))
@@ -143,10 +122,9 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
         return result;
     }
 
-    public IMyCollection<R> Select<R>(Func<T, R> selector)
-        where R : IComparable<R>
+    public IMyCollection<R> Select<R>(Func<T, R> selector) where R : IComparable
     {
-        var result = new BinaryFairytaleTree<R>();
+        var result = new BinaryFairytaleTree<R>(Comparer<R>.Default);
 
         foreach (var item in this)
             result.Add(selector(item));
@@ -181,7 +159,8 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
     public void Sort(Comparison<T> comparison)
     {
         var array = ToArray();
-        Array.Sort(array, comparison);
+        
+        _comparer = Comparer<T>.Create(comparison);
 
         root = null;
         _count = 0;
@@ -208,8 +187,7 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
             current = current.Right;
         }
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    
 
     public T[] ToArray()
     {
@@ -224,7 +202,7 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
 
     public IMyCollection<T> FromArray(T[] array)
     {
-        var newTree = new BinaryFairytaleTree<T>();
+        var newTree = new BinaryFairytaleTree<T>(_comparer);
 
         foreach (var item in array)
             newTree.Add(item);
@@ -234,6 +212,6 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>, IEnumerable<T>
 
     public override string ToString()
     {
-        return string.Join(", ", ToArray());
+        return "BinaryFairytaleTree";
     }
 }

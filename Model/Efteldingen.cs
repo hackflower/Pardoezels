@@ -1,6 +1,6 @@
-using System.Collections;
 
-public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
+
+public class Efteldingen<T> : IMyCollection<T>
 {
     private T[] _data = null!;
     private int _count;
@@ -103,7 +103,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     public IMyCollection<T> Filter(Func<T, bool> predicate)
     {
-        Efteldingen<T> result = [];
+        Efteldingen<T> result = new();
 
         for (int i = 0; i < _count; i++)
         {
@@ -150,7 +150,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         return default;
     }
 
-    public IMyCollection<R> Select<R>(Func<T, R> selector) where R : IComparable<R>
+    public IMyCollection<R> Select<R>(Func<T, R> selector) where R : IComparable
     {
         var newList = new Efteldingen<R>();
 
@@ -207,10 +207,6 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
 
     public T[] ToArray()
     {
@@ -224,7 +220,7 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     public IMyCollection<T> FromArray(T[] array)
     {
-        Efteldingen<T> efteldingen = [];
+        Efteldingen<T> efteldingen = new();
         for (int i = 0; i < array.Length; i++)
         {
             efteldingen.Add(array[i]);
@@ -234,6 +230,6 @@ public class Efteldingen<T> : IMyCollection<T>, IEnumerable<T>
 
     public override string ToString()
     {
-        return string.Join(", ", this.ToArray());
+        return "Efteldingen";
     }
 }

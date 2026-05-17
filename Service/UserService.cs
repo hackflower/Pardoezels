@@ -13,14 +13,9 @@ public class UserService : IUserService
 
     public void AddUser(User user)
     {
-         Console.WriteLine("purr 1");
         user.Id = _users.Count > 0 ? _users.Max((a, b) => a.Id.CompareTo(b.Id)).Id + 1 : 1;
 
-        Console.WriteLine("purr 2");
-
         _users.Add(user);
-
-        Console.WriteLine("purr 3");
         _repository.SaveUsers(_users);
     }
 
@@ -69,5 +64,10 @@ public class UserService : IUserService
     public IMyCollection<User> GetAllUsers()
     {
         return _users;
+    }
+
+    public override string ToString()
+    {
+        return _users.ToString()!;
     }
 }

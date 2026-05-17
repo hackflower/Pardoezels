@@ -4,7 +4,7 @@
     {
         string filePath = "tasks.json";
 
-        int choice = ConsoleTaskView.SelectOption("==== Collection implementation ====", ["Efteldingen", "Eftelinked"]);
+        int choice = ConsoleTaskView.SelectOption("==== Collection implementation ====", ["Efteldingen", "Eftelinked", "BinaryFairytaleTree"], "");
 
         IMyCollection<TaskItem> tasks;
         IMyCollection<User> users;
@@ -14,10 +14,17 @@
             tasks = new Efteldingen<TaskItem>();
             users = new Efteldingen<User>();
         }
-        else
+        else if (choice == 1)
         {
             tasks = new Eftelinked<TaskItem>();
             users = new Eftelinked<User>();
+        }
+        else
+        {
+            tasks = new BinaryFairytaleTree<TaskItem>(Comparer<TaskItem>
+                .Create((a, b) => a.Name.CompareTo(b.Name)));
+            users = new BinaryFairytaleTree<User>(Comparer<User>
+                .Create((a, b) => a.Username.CompareTo(b.Username)));
         }
 
         ITaskRepository taskRepository = new JsonTaskRepository(filePath, tasks);

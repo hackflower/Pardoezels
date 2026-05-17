@@ -147,7 +147,7 @@ public class Eftelinked<T> : IMyCollection<T>
             current = current.Next;
         }
     }
-    public IMyCollection<R> Select<R>(Func<T, R> selector) where R : IComparable<R>
+    public IMyCollection<R> Select<R>(Func<T, R> selector) where R : IComparable
     {
         var newList = new Eftelinked<R>();
         var current = head;
@@ -219,6 +219,6 @@ public class Eftelinked<T> : IMyCollection<T>
 
     public override string ToString()
     {
-        return string.Join(", ", this.ToArray());
+        return "Eftelinked";
     }
 }
