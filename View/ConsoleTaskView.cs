@@ -35,8 +35,8 @@ public class ConsoleTaskView : ITaskView
                 $"{task.Description,-65} " +
                 $"{task.Status.GetDescription(),-15} " +
                 $"{task.Priority,-10} " +
-                $"{string.Join(", ", task.AssignedUsersIds.Select(u => _userService.GetUserById(u)?.Username ?? "Unknown")),-30}" +
-                $"{string.Join(", ", task.DependenciesIds.Select(t => _taskservice.GetTaskById(t)?.Name ?? "Unknown")),-20}"
+                $"{string.Join(", ", task.AssignedUsersIds.Select(u => _userService.GetUserById(u)?.Username ?? "Unknown").ToArray()),-30}" +
+                $"{string.Join(", ", task.DependenciesIds.Select(t => _taskservice.GetTaskById(t)?.Name ?? "Unknown").ToArray()),-20}"
             );
         }
     }
@@ -313,8 +313,11 @@ public class ConsoleTaskView : ITaskView
                 Console.CursorVisible = false;
 
                 int offset = 0;
+
+                bool orderChanged = false;
                 bool orderAsc = false;
 
+                TaskFilter previousFilter = TaskFilter.Id;
                 TaskFilter filter = TaskFilter.Id;
 
                 while (true)
@@ -322,32 +325,38 @@ public class ConsoleTaskView : ITaskView
                     Console.Clear();
                     Console.WriteLine("=== View Tasks ===\n");
 
-                    switch (filter)
+                    if (filter != previousFilter || orderChanged)
                     {
-                        case TaskFilter.Id:
-                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Id.CompareTo(b.Id));
-                            else _taskservice.tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
-                            break;
+                        switch (filter)
+                        {
+                            case TaskFilter.Id:
+                                if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Id.CompareTo(b.Id));
+                                else _taskservice.tasks.Sort((a, b) => a.Id.CompareTo(b.Id));
+                                break;
 
-                        case TaskFilter.Name:
-                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Name.CompareTo(b.Name));
-                            else _taskservice.tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
-                            break;
+                            case TaskFilter.Name:
+                                if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Name.CompareTo(b.Name));
+                                else _taskservice.tasks.Sort((a, b) => a.Name.CompareTo(b.Name));
+                                break;
 
-                        case TaskFilter.Description:
-                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Description.CompareTo(b.Description));
-                            else _taskservice.tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
-                            break;
+                            case TaskFilter.Description:
+                                if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Description.CompareTo(b.Description));
+                                else _taskservice.tasks.Sort((a, b) => a.Description.CompareTo(b.Description));
+                                break;
 
-                        case TaskFilter.Priority:
-                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Priority.CompareTo(b.Priority));
-                            else _taskservice.tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
-                            break;
+                            case TaskFilter.Priority:
+                                if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Priority.CompareTo(b.Priority));
+                                else _taskservice.tasks.Sort((a, b) => a.Priority.CompareTo(b.Priority));
+                                break;
 
-                        case TaskFilter.Status:
-                            if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Status.CompareTo(b.Status));
-                            else _taskservice.tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
-                            break;
+                            case TaskFilter.Status:
+                                if (orderAsc) _taskservice.tasks.Sort((b, a) => a.Status.CompareTo(b.Status));
+                                else _taskservice.tasks.Sort((a, b) => a.Status.CompareTo(b.Status));
+                                break;
+                        }
+
+                        previousFilter = filter;
+                        orderChanged = false;
                     }
 
                     Console.WriteLine($"{"ID",-4} {"Name",-30} {"Description",-65} {"Status",-15} {"Priority",-10} {"Assigned Users",-29} {"Dependencies",-20}");
@@ -370,7 +379,10 @@ public class ConsoleTaskView : ITaskView
                     else if (key == ConsoleKey.LeftArrow && offset >= 10) offset -= 10;
                     else if (key == ConsoleKey.UpArrow && filter < TaskFilter.Status) filter += 1;
                     else if (key == ConsoleKey.DownArrow && filter > TaskFilter.Id) filter -= 1;
-                    else if (key == ConsoleKey.Tab) orderAsc = !orderAsc;
+                    else if (key == ConsoleKey.Tab) {
+                        orderAsc = !orderAsc;
+                        orderChanged = true;
+                    }
                     else if (key == ConsoleKey.Enter) break;
                 }
                 Console.CursorVisible = true;
