@@ -1,9 +1,11 @@
 public class TaskService : ITaskService
 {
+    private readonly UserService _userService;
     private readonly ITaskRepository _repository;
     public IMyCollection<TaskItem> tasks;
-    public TaskService(ITaskRepository repository)
+    public TaskService(ITaskRepository repository, UserService userService)
     {
+        _userService = userService;
         _repository = repository;
         tasks = _repository.LoadTasks();
     }
@@ -21,6 +23,7 @@ public class TaskService : ITaskService
         };
 
         tasks.Add(newTask);
+        AddAssignedUser(newTask.Id, _userService.GetUserById(userId));
         _repository.SaveTasks(tasks);
     }
 

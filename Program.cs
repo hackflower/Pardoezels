@@ -29,8 +29,8 @@
 
         ITaskRepository taskRepository = new JsonTaskRepository(filePath, tasks);
         IUserRepository userRepository = new JsonUserRepository("users.json", users);
-        TaskService taskService = new TaskService(taskRepository);
         UserService userService = new UserService(userRepository);
+        TaskService taskService = new TaskService(taskRepository, userService);
         ITaskView view = new ConsoleTaskView(taskService, userService);
         
         view.Run();
