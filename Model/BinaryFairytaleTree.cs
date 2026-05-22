@@ -61,11 +61,16 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>
         Node? parent = null;
         Node? current = root;
 
-        while (current != null && current.Data!.Equals(value))
+        while (current != null)
         {
+            int compare = _comparer.Compare(value, current.Data);
+
+            if (compare == 0)
+                break;
+
             parent = current;
 
-            if (_comparer.Compare(value, current.Data) < 0)
+            if (compare < 0)
                 current = current.Left;
             else
                 current = current.Right;
@@ -86,6 +91,7 @@ public class BinaryFairytaleTree<T> : IMyCollection<T>
             }
 
             current.Data = successor.Data;
+
             current = successor;
             parent = successorParent;
         }
