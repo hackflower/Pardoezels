@@ -30,11 +30,14 @@ public class TaskService : ITaskService
     public void RemoveTask(int id)
     {
         var task = tasks.FindBy(id, (t, i) => t.Id.CompareTo(i));
-        if (task.HasValue)
-        {
-            tasks.Remove(task.Value);
-            _repository.SaveTasks(tasks);
-        }
+
+        if (!task.HasValue) return;
+
+        foreach (TaskItem t in tasks)
+            t.DependenciesIds.Remove(id);
+
+        tasks.Remove(task.Value);
+        _repository.SaveTasks(tasks);
     }
 
     public void ChangeTaskStatus(int id, TaskItem.Progress status)
