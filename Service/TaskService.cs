@@ -23,7 +23,7 @@ public class TaskService : ITaskService
         };
 
         tasks.Add(newTask);
-        AddAssignedUser(newTask.Id, _userService.GetUserById(userId));
+        AddAssignedUser(newTask.Id, _userService.GetUserById(userId)!);
         _repository.SaveTasks(tasks);
     }
 
